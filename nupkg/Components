@@ -1,0 +1,3 @@
+src/YSCore.Base
+src/YS.Provider.Snowflake
+src/YS.Provider.EntityFrameworkCore

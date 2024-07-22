@@ -1,0 +1,41 @@
+<Project>
+	<PropertyGroup>
+		<VersionPrefix>1.0.2</VersionPrefix>
+		<VersionSuffix></VersionSuffix>
+	</PropertyGroup>
+	<PropertyGroup>
+		<Authors>YSCore</Authors>
+		<Product>YSCore Framework</Product>
+		<Description>YSCore Framework</Description>
+		<owners>YSCore</owners>
+		<PackagePrefix>YSCore</PackagePrefix>
+		<PackageIconUrl></PackageIconUrl>
+		<PackageProjectUrl></PackageProjectUrl>
+		<PackageLicenseUrl></PackageLicenseUrl>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl></RepositoryUrl>
+		<GenerateAssemblyConfigurationAttribute>True</GenerateAssemblyConfigurationAttribute>
+		<GenerateAssemblyCompanyAttribute>True</GenerateAssemblyCompanyAttribute>
+		<GenerateAssemblyProductAttribute>True</GenerateAssemblyProductAttribute>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);CS1591;</NoWarn>
+        <LangVersion>preview</LangVersion>
+		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+	</PropertyGroup>
+  
+
+	<PropertyGroup Condition="$(IsTestProject) != 'true'">
+		<LangVersion>10.0</LangVersion>
+		<Nullable>enable</Nullable>
+		<!--<WarningsAsErrors>$(WarningsAsErrors);CS8625;CS8604;CS8602;CS8600;CS8618;CS8601;CS8603</WarningsAsErrors>-->
+	</PropertyGroup>
+
+	<!--<ItemGroup Condition="$(IsTestProject) != 'true'">
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.4.0.72892">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
+	</ItemGroup>-->
+</Project>
