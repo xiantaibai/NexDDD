@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{F4AAFE05-E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infra", "Infra", "{99E24B63-6E9A-4462-875C-35452D768B5E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YSCore.Base", "src\YSCore.Base\YSCore.Base.csproj", "{7F1CCCAD-7A83-433C-97E3-83CEC5F51874}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YSCore.Base", "src\YSCore.Base\YSCore.Base.csproj", "{7F1CCCAD-7A83-433C-97E3-83CEC5F51874}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdGeneration", "IdGeneration", "{63CA0C23-ACDF-49C3-861D-5AD62356F4CF}"
 EndProject
@@ -27,9 +27,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YSCore.Provider.EntityFrameworkCore", "src\YS.Provider.EntityFrameworkCore\YSCore.Provider.EntityFrameworkCore.csproj", "{65588CDA-AC32-49EA-B853-179B82C8B240}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YSCore.Provider.EntityFrameworkCore", "src\YS.Provider.EntityFrameworkCore\YSCore.Provider.EntityFrameworkCore.csproj", "{65588CDA-AC32-49EA-B853-179B82C8B240}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YSCore.Provider.Snowflake", "src\YS.Provider.Snowflake\YSCore.Provider.Snowflake.csproj", "{0D8F0956-2D3D-4050-854E-B24F1BAB897C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YSCore.Provider.Snowflake", "src\YS.Provider.Snowflake\YSCore.Provider.Snowflake.csproj", "{0D8F0956-2D3D-4050-854E-B24F1BAB897C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{C3ED2A51-6195-48ED-8428-5FB40E31E58A}"
 	ProjectSection(SolutionItems) = preProject
@@ -38,6 +38,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{C3ED2A51
 		nupkg\pack.sh = nupkg\pack.sh
 		nupkg\README.md = nupkg\README.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DistributedTransactions", "DistributedTransactions", "{3C7E163A-586E-44CF-8CA4-40377BD648C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YS.Provider.Cap", "src\YS.Provider.Cap\YS.Provider.Cap.csproj", "{5ADCB59B-C4D8-47B6-992A-634C48D2054C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,10 @@ Global
 		{0D8F0956-2D3D-4050-854E-B24F1BAB897C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D8F0956-2D3D-4050-854E-B24F1BAB897C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D8F0956-2D3D-4050-854E-B24F1BAB897C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ADCB59B-C4D8-47B6-992A-634C48D2054C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ADCB59B-C4D8-47B6-992A-634C48D2054C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ADCB59B-C4D8-47B6-992A-634C48D2054C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ADCB59B-C4D8-47B6-992A-634C48D2054C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +76,8 @@ Global
 		{63CA0C23-ACDF-49C3-861D-5AD62356F4CF} = {5007320D-9315-476D-9621-6F7B61FD14DB}
 		{65588CDA-AC32-49EA-B853-179B82C8B240} = {99E24B63-6E9A-4462-875C-35452D768B5E}
 		{0D8F0956-2D3D-4050-854E-B24F1BAB897C} = {63CA0C23-ACDF-49C3-861D-5AD62356F4CF}
+		{3C7E163A-586E-44CF-8CA4-40377BD648C4} = {5007320D-9315-476D-9621-6F7B61FD14DB}
+		{5ADCB59B-C4D8-47B6-992A-634C48D2054C} = {3C7E163A-586E-44CF-8CA4-40377BD648C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {88FC0A23-724E-4E57-ABC4-768B7793685B}

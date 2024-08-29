@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using YSCore.Base.DatabaseAccessor;
 using YSCore.Base.Diagnostics;
 using YS.Provider.EntityFrameworkCore.Extensions;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
+using System.Xml;
 
 namespace YS.Provider.EntityFrameworkCore
 {
@@ -93,7 +95,7 @@ namespace YS.Provider.EntityFrameworkCore
                     {
                         // ensure field 'Id' initialized when new entity added
                         await base.SaveChangesAsync(cancellationToken);
-                        await _mediator.DispatchDomainEventsAsync(this,  cancellationToken);
+                        await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
                         await CommitAsync(cancellationToken);
                         return true;
                     }
@@ -107,9 +109,25 @@ namespace YS.Provider.EntityFrameworkCore
             else
             {
                 await base.SaveChangesAsync(cancellationToken);
-                await _mediator.DispatchDomainEventsAsync(this,  cancellationToken);
+                await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
                 return true;
             }
+        }
+
+        protected internal virtual Task BeforeSaveEntitiesAsync(CancellationToken cancellationToken = default)
+        {
+            var modifiedEntries = ChangeTracker.Entries()
+            .Where(e => e.State == EntityState.Modified);
+
+            foreach (var entry in modifiedEntries)
+            {
+                if (entry.Entity is BaseEntity myEntity)
+                {
+                    myEntity.LastModifyTime = DateTime.UtcNow; // 设置为当前时间
+                }
+            }
+
+            return Task.CompletedTask;
         }
 
         #endregion
@@ -141,5 +159,6 @@ namespace YS.Provider.EntityFrameworkCore
             }
         }
         #endregion
+
     }
 }

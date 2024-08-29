@@ -15,7 +15,7 @@ namespace YS.Provider.EntityFrameworkCore.Extensions
         this PropertyBuilder<DateTime> builder)
         {
             builder = builder ?? throw new ArgumentNullException(nameof(builder));
-
+           
             builder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
             return builder.HasValueGenerator<UtcDateTimeGenerator>();
         }

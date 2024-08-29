@@ -49,8 +49,15 @@
     <PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="$(EntityFrameworkVersion)" PrivateAssets="All"/>
     <PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlEntityFrameworkCorePostgreSQLVersion)" />
     <PackageReference Update="Pomelo.EntityFrameworkCore.MySql" Version="$(PomeloVersion)"/>
-    
+
+	<!-- EFCoreSharding -->
     <PackageReference Update="MediatR" Version="12.3.0" />
 	<PackageReference Update="Yitter.IdGenerator" Version="1.0.14" />
+
+	<PackageReference Update="DotNetCore.CAP" Version="7.2.0"/>
+	<PackageReference Update="DotNetCore.CAP.MySql" Version="7.2.0" />
+	<PackageReference Update="DotNetCore.CAP.PostgreSql" Version="7.2.0" />
+	<PackageReference Update="DotNetCore.CAP.RabbitMQ" Version="7.2.0" />
+	<PackageReference Update="DotNetCore.CAP.Dashboard" Version="7.2.0" />
   </ItemGroup>
 </Project>
