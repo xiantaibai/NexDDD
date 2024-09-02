@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YSCore.Base.Extension;
 
 namespace YSCore.Base.Integration
 {
@@ -26,7 +27,13 @@ namespace YSCore.Base.Integration
 
             foreach (var handler in handlers)
             {
-                services.TryAddScoped(handler);
+                var interfaceType = handler.GetInterfaces().First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IIntegrationEventHandler<>));
+                services.TryAddEnumerable(new ServiceDescriptor(interfaceType, handler, ServiceLifetime.Scoped));
+                // key 值对象，IIntegrationEvent 
+                services.Configure<IntergrationEventSubscriptionInfo>(o =>
+                {
+                    o.EventTypes[interfaceType.GetGenericArguments().First().GetGenericTypeName()] = handler;
+                });
             }
 
             return new IntegrationEventServicesBuilder(services);

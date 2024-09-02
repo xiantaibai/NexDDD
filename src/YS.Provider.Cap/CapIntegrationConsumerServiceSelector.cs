@@ -16,14 +16,16 @@ namespace YS.Provider.Cap
     /// <summary>
     /// Cap 消息订阅封装
     /// </summary>
-    public class CapIntegrationConsumerServiceSelector: ConsumerServiceSelector
+    public class CapIntegrationConsumerServiceSelector : ConsumerServiceSelector
     {
         private readonly CapOptions _capOptions;
+        private readonly IntergrationEventSubscriptionInfo _subscriptionInfo;
 
         public CapIntegrationConsumerServiceSelector(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
             _capOptions = serviceProvider.GetRequiredService<IOptions<CapOptions>>().Value;
+            _subscriptionInfo = serviceProvider.GetRequiredService<IOptions<IntergrationEventSubscriptionInfo>>().Value;
         }
 
         protected override IEnumerable<ConsumerExecutorDescriptor> FindConsumersFromInterfaceTypes(IServiceProvider provider)
@@ -32,31 +34,27 @@ namespace YS.Provider.Cap
 
             using (var scoped = provider.CreateScope())
             {
-                var hanletype = typeof(IIntegrationEventHandler<>);
-                var hanletypeTypeInfo = hanletype.GetTypeInfo();
-
-                var handlerServices = scoped.ServiceProvider.GetServices(hanletype);
-
-                foreach (var handler in handlerServices)
+                foreach (var key in _subscriptionInfo.EventTypes)
                 {
-                    var typeInfo = handler.GetType().GetTypeInfo();
-                    if (typeInfo == null || !hanletypeTypeInfo.IsAssignableFrom(typeInfo))
+                    var typeInfo = key.Value.GetTypeInfo();
+                    if (typeInfo == null)
                     {
                         continue;
                     }
-                    executorDescriptorList.AddRange(GetCapDescription(typeInfo));
+                    executorDescriptorList.AddRange(GetCapDescription(typeInfo, key.Key));
                 }
+
             }
             return executorDescriptorList;
         }
 
-        private IEnumerable<ConsumerExecutorDescriptor> GetCapDescription(TypeInfo typeInfo)
+        private IEnumerable<ConsumerExecutorDescriptor> GetCapDescription(TypeInfo typeInfo, string capName)
         {
-            var method = typeInfo.DeclaredMethods.FirstOrDefault(x => x.Name == "Handle");
+            var method = typeInfo.DeclaredMethods.FirstOrDefault(x => x.Name == "HandleAsync");
             if (method == null) yield break;
 
             var topic = _capOptions.DefaultGroupName + "." + _capOptions.Version;
-            var capName = typeInfo.GetGenericTypeName();
+            // var capName = typeInfo.GetGenericTypeName();
 
             var parameters = method.GetParameters()
                    .Select(parameter => new ParameterDescriptor
