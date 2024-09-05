@@ -48,10 +48,10 @@ namespace YSCore.Base.MultiTenants
         /// <typeparam name="V"></typeparam>
         /// <param name="lifetime"></param>
         /// <returns></returns>
-        public TenantBuilder<T> WithStore<V>() where V : class, ITenantStore<T>
+        public TenantBuilder<T> WithStore<V>(ServiceLifetime lifetime = ServiceLifetime.Transient) where V : class, ITenantStore<T>
         {
-            // _services.Add(ServiceDescriptor.Describe(typeof(ITenantStore<T>), typeof(V), lifetime));
-            _services.TryAddSingleton<ITenantStore<T>, V>();
+            _services.Add(ServiceDescriptor.Describe(typeof(ITenantStore<T>), typeof(V), lifetime));
+            // _services.TryAddScoped<ITenantStore<T>, V>();
             return this;
         }
 
@@ -59,11 +59,11 @@ namespace YSCore.Base.MultiTenants
         /// 注册默认的存储
         /// </summary>
         /// <returns></returns>
-        public TenantBuilder<T> WithDefaultStore(IEnumerable<T> tenants)
+        public TenantBuilder<T> WithDefaultStore(ServiceLifetime lifetime = ServiceLifetime.Transient)
         {
-            var service = new DefaultTenantStore<T>(tenants);
-            _services.TryAddSingleton<ITenantStore<T>>(service);
-            return this;
+            //var service = new DefaultTenantStore<T>(tenants);
+            //_services.TryAddScoped<ITenantStore<T>>(service);
+            return WithStore<DefaultTenantStore<T>>();
         }
 
 

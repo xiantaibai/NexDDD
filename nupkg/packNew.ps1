@@ -12,6 +12,12 @@ $packFolder = (Get-Item -Path "./" -Verbose).FullName
 $rootFolder = Split-Path -Path $packFolder -Parent
 $srcPath= Join-Path $rootFolder "/src"
 
+# 找到版本号
+[xml]$propsXml = Get-Content (Join-Path $rootFolder "Directory.Build.props")
+$version = $propsXml.Project.PropertyGroup.VersionPrefix
+
+Write-Output " version: $version"
+
 Write-Output "packFolder: $packFolder"
 Write-Output "rootFolder: $rootFolder"
 Write-Output "srcPath: $srcPath"
@@ -30,6 +36,9 @@ function Ask-Continue {
         [string]$Message = "Do you want to continue? (Y/N)"
     )
     $response = Read-Host $Message
+
+    Write-Output  "response: $($response)"
+
     switch ($response.ToUpper()) {
         'Y' {
             return $true
@@ -45,8 +54,8 @@ function Ask-Continue {
     }
 }
 
-
-if (Ask-Continue -Message "CRATE Package Nuget? (Y/N)"){
+$confirmation = Read-Host "CRATE Package Nuget? (Y/N)"
+if ($confirmation.ToUpper() -eq 'Y'){
     Write-Output "CRATE Package;"
     foreach ($projectFile in $projectFiles) {
         Write-Output "Processing project: $($projectFile.FullName)"
@@ -82,10 +91,21 @@ if (Ask-Continue -Message "CRATE Package Nuget? (Y/N)"){
         # 返回原始路径
         Pop-Location
     }
+}else{
+     Write-Output " Package Not generated"
 }
 
-if (Ask-Continue -Message "only Push Nuget? (Y/N)"){
-    $nupkgFiles=  Get-ChildItem -Path $packFolder -Recurse -Filter *.nupkg
+$confirmation2 = Read-Host "only Push Nuget? (Y/N)"
+if ($confirmation2.ToUpper() -eq 'Y'){
+    # $version = $version.Trim()
+
+    $allNupkgFiles =  Get-ChildItem -Path $packFolder -Recurse -Filter *.nupkg 
+
+    Write-Output "All .nupkg files found:" $allNupkgFiles
+
+    $nupkgFiles= $allNupkgFiles | Where-Object { $_.Name -like "*1.0.6.nupkg" }
+
+    Write-Output "Filtered .nupkg files:" $nupkgFiles
     foreach ($nupkgFile in $nupkgFiles) {
        ##  Move-Item -Force $nupkgFile $packFolder 
         Write-Output "Publishing package: $($nupkgFile.FullName)"
