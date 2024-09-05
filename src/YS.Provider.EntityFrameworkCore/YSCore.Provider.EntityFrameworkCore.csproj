@@ -19,4 +19,8 @@
 		<ProjectReference Include="..\YSCore.Base\YSCore.Base.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="MultiTenants\" />
+	</ItemGroup>
+
 </Project>

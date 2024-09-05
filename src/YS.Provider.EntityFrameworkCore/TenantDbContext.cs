@@ -1,0 +1,56 @@
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
+using YS.Provider.EntityFrameworkCore;
+using YSCore.Base.DatabaseAccessor;
+using YSCore.Base.DatabaseAccessor.Filter;
+using YSCore.Base.MultiTenants;
+using YSCore.Provider.EntityFrameworkCore.Extensions;
+
+namespace YSCore.Provider.EntityFrameworkCore
+{
+    /// <summary>
+    /// 多租户上下文 
+    /// </summary>
+    public class TenantDbContext<T> : AppDbContextBase where T : Tenant
+    {
+        public long TenantId { get; set; }
+        private readonly ITenantContextAccessor<T> _tenantProvider;
+        protected TenantDbContext(DbContextOptions options, IMediator mediator, IServiceProvider provider) : base(options, mediator, provider)
+        {
+            _tenantProvider = provider.GetService<ITenantContextAccessor<T>>();
+            TenantId = _tenantProvider == null ? 0 : _tenantProvider.TenantInfo.Id;
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            // 租户 过滤器
+            modelBuilder.AddQueryFilter<ITenantIdFilter>(x => x.TenantId == TenantId);
+        }
+
+        protected internal override Task BeforeSaveEntitiesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries<ITenantIdFilter>().ToList())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.Entity.TenantId = TenantId;
+                        break;
+                    case EntityState.Modified:
+                        entry.Entity.TenantId = TenantId;
+                        break;
+                }
+            }
+
+            return base.BeforeSaveEntitiesAsync(cancellationToken);
+        }
+    }
+}

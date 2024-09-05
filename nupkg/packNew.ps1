@@ -45,18 +45,9 @@ function Ask-Continue {
     }
 }
 
-if (Ask-Continue -Message "只推送Nuget? (Y/N)"){
-    $nupkgFiles=  Get-ChildItem -Path $packFolder -Recurse -Filter *.nupkg
-    foreach ($nupkgFile in $nupkgFiles) {
-       ##  Move-Item -Force $nupkgFile $packFolder 
-        Write-Output "Publishing package: $($nupkgFile.FullName)"
-        $fileName = Split-Path -Path $nupkgFile -Leaf
-        Write-Output "filename: $($fileName)"
-        
-        # 发布到 NuGet
-        dotnet nuget push ($nupkgFile.FullName) -s $repo -k $apikey --skip-duplicate
-    }
-}else{
+
+if (Ask-Continue -Message "CRATE Package Nuget? (Y/N)"){
+    Write-Output "CRATE Package;"
     foreach ($projectFile in $projectFiles) {
         Write-Output "Processing project: $($projectFile.FullName)"
     
@@ -69,8 +60,15 @@ if (Ask-Continue -Message "只推送Nuget? (Y/N)"){
         # 创建 NuGet 包
         dotnet pack $projectFile.Name -c Release -o .
 
+        # 找到版本号
+        [xml]$propsXml = Get-Content (Join-Path $rootFolder "Directory.Build.props")
+        $version = $propsXml.Project.PropertyGroup.VersionPrefix
+
+        Write-Output " version: $($version)"
+
         # 查找生成的 .nupkg 文件
         $nupkgFiles = Get-ChildItem -Path $projectFile.DirectoryName -Filter *.nupkg
+
         foreach ($nupkgFile in $nupkgFiles) {
             Move-Item -Force $nupkgFile $packFolder 
             Write-Output "Publishing package: $($nupkgFile.FullName)"
@@ -83,6 +81,19 @@ if (Ask-Continue -Message "只推送Nuget? (Y/N)"){
 
         # 返回原始路径
         Pop-Location
+    }
+}
+
+if (Ask-Continue -Message "only Push Nuget? (Y/N)"){
+    $nupkgFiles=  Get-ChildItem -Path $packFolder -Recurse -Filter *.nupkg
+    foreach ($nupkgFile in $nupkgFiles) {
+       ##  Move-Item -Force $nupkgFile $packFolder 
+        Write-Output "Publishing package: $($nupkgFile.FullName)"
+        $fileName = Split-Path -Path $nupkgFile -Leaf
+        Write-Output "filename: $($fileName)"
+        
+        # 发布到 NuGet
+        dotnet nuget push ($nupkgFile.FullName) -s $repo -k $apikey --skip-duplicate
     }
 }
 

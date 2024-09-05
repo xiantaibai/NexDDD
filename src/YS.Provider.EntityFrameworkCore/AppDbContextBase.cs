@@ -13,6 +13,10 @@ using YSCore.Base.Diagnostics;
 using YS.Provider.EntityFrameworkCore.Extensions;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 using System.Xml;
+using System.Linq.Expressions;
+using YSCore.Base.DatabaseAccessor.Filter;
+using Microsoft.VisualBasic;
+using YSCore.Provider.EntityFrameworkCore.Extensions;
 
 namespace YS.Provider.EntityFrameworkCore
 {
@@ -35,6 +39,12 @@ namespace YS.Provider.EntityFrameworkCore
         //protected virtual void ConfigureStronglyTypedIdValueConverter(ModelConfigurationBuilder configurationBuilder)
         //{
         //}
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // IsDelete 过滤器
+            modelBuilder.AddQueryFilter<IDeletedFilter>(x => x.IsDelete == false);
+        }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
@@ -94,6 +104,7 @@ namespace YS.Provider.EntityFrameworkCore
                     try
                     {
                         // ensure field 'Id' initialized when new entity added
+                        await BeforeSaveEntitiesAsync(cancellationToken);
                         await base.SaveChangesAsync(cancellationToken);
                         await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
                         await CommitAsync(cancellationToken);
@@ -108,6 +119,7 @@ namespace YS.Provider.EntityFrameworkCore
             }
             else
             {
+                await BeforeSaveEntitiesAsync(cancellationToken);
                 await base.SaveChangesAsync(cancellationToken);
                 await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
                 return true;
@@ -135,7 +147,7 @@ namespace YS.Provider.EntityFrameworkCore
 
         #region DiagnosticListener
 
-        void WriteTransactionBegin(Guid data)
+       void WriteTransactionBegin(Guid data)
         {
             if (_diagnosticListener.IsEnabled(YsNetCoreDiagnosticListenerNames.TransactionBegin))
             {
