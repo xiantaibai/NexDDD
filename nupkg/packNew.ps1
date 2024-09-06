@@ -14,7 +14,8 @@ $srcPath= Join-Path $rootFolder "/src"
 
 # 找到版本号
 [xml]$propsXml = Get-Content (Join-Path $rootFolder "Directory.Build.props")
-$version = $propsXml.Project.PropertyGroup.VersionPrefix
+# $version = $propsXml.Project.PropertyGroup.VersionPrefix
+$version = $propsXml.SelectSingleNode("//VersionPrefix").InnerText
 
 Write-Output " version: $version"
 
@@ -103,9 +104,9 @@ if ($confirmation2.ToUpper() -eq 'Y'){
 
     Write-Output "All .nupkg files found:" $allNupkgFiles
 
-    $nupkgFiles= $allNupkgFiles | Where-Object { $_.Name -like "*1.0.6.nupkg" }
+    $nupkgFiles= $allNupkgFiles | Where-Object { $_.Name.Contains($version) }
 
-    Write-Output "Filtered .nupkg files:" $nupkgFiles
+    Write-Output "Filtered version:$($version) .nupkg files:" $nupkgFiles
     foreach ($nupkgFile in $nupkgFiles) {
        ##  Move-Item -Force $nupkgFile $packFolder 
         Write-Output "Publishing package: $($nupkgFile.FullName)"
@@ -115,6 +116,12 @@ if ($confirmation2.ToUpper() -eq 'Y'){
         # 发布到 NuGet
         dotnet nuget push ($nupkgFile.FullName) -s $repo -k $apikey --skip-duplicate
     }
+
+    # 删除所有 nupkg
+    # $allNupkgFiles | ForEach-Object {
+    #    Remove-Item -Path $_.FullName -Force
+    #    Write-Output "Deleted package: $($_.FullName)"
+    # }
 }
 
 if (Ask-Continue -Message "Proceed with the build? (Y/N)"){
