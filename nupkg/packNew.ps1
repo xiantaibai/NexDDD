@@ -17,6 +17,8 @@ $srcPath= Join-Path $rootFolder "/src"
 # $version = $propsXml.Project.PropertyGroup.VersionPrefix
 $version = $propsXml.SelectSingleNode("//VersionPrefix").InnerText
 
+$version = $version.Trim()
+
 Write-Output " version: $version"
 
 Write-Output "packFolder: $packFolder"
@@ -106,7 +108,7 @@ if ($confirmation2.ToUpper() -eq 'Y'){
 
     $nupkgFiles= $allNupkgFiles | Where-Object { $_.Name.Contains($version) }
 
-    Write-Output "Filtered version:$($version) .nupkg files:" $nupkgFiles
+    Write-Output "Filtered version:$($version).nupkg files:" $nupkgFiles
     foreach ($nupkgFile in $nupkgFiles) {
        ##  Move-Item -Force $nupkgFile $packFolder 
         Write-Output "Publishing package: $($nupkgFile.FullName)"

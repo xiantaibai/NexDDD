@@ -18,13 +18,13 @@ namespace YSCore.Provider.EntityFrameworkCore
     /// <summary>
     /// 多租户上下文 
     /// </summary>
-    public class TenantDbContext<T> : AppDbContextBase where T : Tenant
+    public class MultiTenantDbContext : AppDbContextBase
     {
         public long TenantId { get; set; }
-        private readonly ITenantContextAccessor<T> _tenantProvider;
-        protected TenantDbContext(DbContextOptions options, IMediator mediator, IServiceProvider provider) : base(options, mediator, provider)
+        private readonly ITenantContextAccessor<Tenant> _tenantProvider;
+        protected MultiTenantDbContext(DbContextOptions options, IMediator mediator, IServiceProvider provider) : base(options, mediator, provider)
         {
-            _tenantProvider = provider.GetService<ITenantContextAccessor<T>>();
+            _tenantProvider = provider.GetService<ITenantContextAccessor<Tenant>>();
             TenantId = _tenantProvider == null ? 0 : _tenantProvider.TenantInfo.Id;
         }
 
@@ -32,21 +32,27 @@ namespace YSCore.Provider.EntityFrameworkCore
         {
             base.OnModelCreating(modelBuilder);
             // 租户 过滤器
-            modelBuilder.AddQueryFilter<ITenantIdFilter>(x => x.TenantId == TenantId);
+            if (TenantId > 0)
+            {
+                modelBuilder.AddQueryFilter<ITenantIdFilter>(x => x.TenantId == TenantId);
+            }
         }
 
         protected internal override Task BeforeSaveEntitiesAsync(CancellationToken cancellationToken = default)
         {
-            foreach (var entry in ChangeTracker.Entries<ITenantIdFilter>().ToList())
+            if (TenantId > 0)
             {
-                switch (entry.State)
+                foreach (var entry in ChangeTracker.Entries<ITenantIdFilter>().ToList())
                 {
-                    case EntityState.Added:
-                        entry.Entity.TenantId = TenantId;
-                        break;
-                    case EntityState.Modified:
-                        entry.Entity.TenantId = TenantId;
-                        break;
+                    switch (entry.State)
+                    {
+                        case EntityState.Added:
+                            entry.Entity.TenantId = TenantId;
+                            break;
+                        case EntityState.Modified:
+                            entry.Entity.TenantId = TenantId;
+                            break;
+                    }
                 }
             }
 
