@@ -60,12 +60,32 @@ namespace YS.Provider.EntityFrameworkCore
 
         public virtual int FakeDeleteById(TKey id)
         {
-            throw new NotImplementedException();
+            var entity = Get(id);
+            if (entity != null)
+            {
+                var property = typeof(TEntity).GetProperty("IsDelete");
+                if (property != null && property.CanWrite)
+                {
+                    property.SetValue(entity, true);
+                    return 1;
+                }
+            }
+            return 0;
         }
 
-        public virtual Task<int> FakeDeleteByIdAsync(TKey id, CancellationToken cancellationToken = default)
+        public virtual async Task<int> FakeDeleteByIdAsync(TKey id, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var entity = await GetAsync(id);
+            if (entity != null)
+            {
+                var property = typeof(TEntity).GetProperty("IsDelete");
+                if (property != null && property.CanWrite)
+                {
+                    property.SetValue(entity, true);
+                    return 1;
+                }
+            }
+            return 0;
         }
 
         public virtual TEntity? Get(TKey id) => DbContext.Find<TEntity>(id);

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YSCore.Base.Extension
+namespace YSCore.Base.Extensions
 {
     public static class GenericTypeExtensions
     {

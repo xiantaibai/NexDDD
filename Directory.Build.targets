@@ -53,6 +53,7 @@
 	<!-- EFCoreSharding -->
     <PackageReference Update="MediatR" Version="12.3.0" />
 	<PackageReference Update="Yitter.IdGenerator" Version="1.0.14" />
+	<PackageReference Update="FluentValidation.AspNetCore" Version="11.3.0" />
 
 	<PackageReference Update="DotNetCore.CAP" Version="8.2.0"/>
 	<PackageReference Update="DotNetCore.CAP.MySql" Version="8.2.0" />

@@ -11,6 +11,7 @@
 		<PackageReference Include="Microsoft.Extensions.Options" />
 		<PackageReference Include="MediatR" />
 		<PackageReference Include="Yitter.IdGenerator" />
+		<PackageReference Include="FluentValidation.AspNetCore" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -19,5 +20,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Behaviors\" />
+	  <Folder Include="DataValidation\Internal\" />
+	  <Folder Include="Exceptions\" />
 	</ItemGroup>
 </Project>

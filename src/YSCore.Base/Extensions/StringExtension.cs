@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace YSCore.Base.Extension
+namespace YSCore.Base.Extensions
 {
     public static class StringExtension
     {
