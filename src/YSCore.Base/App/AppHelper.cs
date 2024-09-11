@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using YSCore.Base.App.Startups;
 
 namespace YSCore.Base.App
 {
@@ -62,14 +63,14 @@ namespace YSCore.Base.App
                 // 存储服务提供器
                 InternalServices = services;
 
-                // 存储根服务
-                // RootServices = services.BuildServiceProvider();
 
                 // 存储环境信息
                 WebHostEnvironment = hostContext.HostingEnvironment;
 
                 HostEnvironment = hostContext.HostingEnvironment;
 
+                // 存储根服务
+                services.AddHostedService<GenericHostLifetimeEventsHostedService>();
 
                 // 注册 HttpContextAccessor 服务
                 services.AddHttpContextAccessor();
