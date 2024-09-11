@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YSCore.Base.Extension;
+using YSCore.Base.Extensions;
 
 namespace YSCore.Base.Integration
 {

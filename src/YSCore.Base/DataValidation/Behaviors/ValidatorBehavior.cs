@@ -38,7 +38,7 @@ namespace YSCore.Base.DataValidation.Behaviors
             {
                 _logger.LogWarning("Validation errors - {CommandType} - Command: {@Command} - Errors: {@ValidationErrors}", typeName, request, failures);
                 // var metadata = ValidatorContext.GetValidationMetadata(failures);
-                var exception = new ValidationException("Validation exception", failures);
+                var exception = new ValidationException("Validation failed", failures);
                 // 上下文设置
                 _httpContext.HttpContext.Items[nameof(ValidationMetadata) + nameof(AppFriendlyException)] = failures;
 

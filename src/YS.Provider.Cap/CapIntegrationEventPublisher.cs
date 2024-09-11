@@ -1,5 +1,5 @@
 ﻿using DotNetCore.CAP;
-using YSCore.Base.Extension;
+using YSCore.Base.Extensions;
 using YSCore.Base.Integration;
 
 namespace YS.Provider.Cap

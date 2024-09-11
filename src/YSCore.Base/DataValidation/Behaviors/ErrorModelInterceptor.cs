@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YSCore.Base.DataValidation.Internal;
 using YSCore.Base.Exceptions;
 
 namespace YSCore.Base.DataValidation.Behaviors
@@ -24,11 +25,18 @@ namespace YSCore.Base.DataValidation.Behaviors
         {
             if (result.Errors == null || result.Errors.Count == 0)
                 return result;
-            //throw new KnownException(message: result.Errors[0].ErrorMessage, errorCode: 400, errorData: result.Errors
-            //    .Select(p =>
-            //        new { errorCode = p.ErrorCode, errorMessage = p.ErrorMessage, propertyName = p.PropertyName }
-            //    ).ToArray());
-            throw ExceptionHelper.Bah("Command Validation Errors for type {0}", exception);
+
+            // 获取验证的对象
+            var validatedObject = validationContext.InstanceToValidate;
+
+            // 获取对象的类型名称
+            var objectTypeName = validatedObject.GetType().Name;
+
+            var failures = result.Errors.ToList();
+            var exception = new ValidationException("Validation failed", failures);
+
+            actionContext.HttpContext.Items[nameof(ValidationMetadata) + nameof(AppFriendlyException)] = failures;
+            throw ExceptionHelper.Bah("Collection Validation failed for type {0}", exception, objectTypeName);
         }
     }
 }

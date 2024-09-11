@@ -1,4 +1,6 @@
-﻿namespace YSCore.Base.Exceptions.Extensions
+﻿using Microsoft.AspNetCore.Http;
+
+namespace YSCore.Base.Exceptions.Extensions
 {
     /// <summary>
     /// 异常扩展
