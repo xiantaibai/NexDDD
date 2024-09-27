@@ -1,4 +1,7 @@
-﻿namespace YSCore.Base.UnifyResult.Internal
+﻿
+using YSCore.Base.Exceptions;
+
+namespace YSCore.Base.UnifyResult.Internal
 {
     public class AppRESTfulResult<T>
     {
@@ -31,5 +34,16 @@
         /// 时间戳
         /// </summary>
         public long Timestamp { get; set; }
+
+
+        internal static AppRESTfulResult<T> Failed(List<AppFriendlyException>? errors)
+        {
+            var result = new AppRESTfulResult<T> { Succeeded = false };
+            if (errors != null)
+            {
+                result.Errors = errors;
+            }
+            return result;
+        }
     }
 }

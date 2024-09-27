@@ -12,5 +12,8 @@ namespace YSCore.Base.Integration
     public interface IIntegrationEventPublisher
     {
         Task PublishAsync<TIntegrationEvent>(TIntegrationEvent integrationEvent, CancellationToken cancellationToken = default) where TIntegrationEvent : IIntegrationEvent;
+
+
+        Task PublishAsync<TIntegrationEvent>(TIntegrationEvent integrationEvent, IDictionary<string, string?> headers, CancellationToken cancellationToken = default) where TIntegrationEvent : IIntegrationEvent;
     }
 }

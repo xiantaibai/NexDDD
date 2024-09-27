@@ -15,6 +15,9 @@ namespace YS.Provider.Cap
         {
             builder.Services.AddSingleton<IConsumerServiceSelector, CapIntegrationConsumerServiceSelector>();
 
+            builder.Services.AddSingleton<ISubscribeInvoker, CapIIntegrationSubscribeInvoker>();
+
+
             builder.Services.AddSingleton<IIntegrationEventPublisher, CapIntegrationEventPublisher>();
 
             return builder;

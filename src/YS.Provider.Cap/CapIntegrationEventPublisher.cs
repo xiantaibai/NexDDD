@@ -19,5 +19,13 @@ namespace YS.Provider.Cap
                 contentObj: integrationEvent,
                 cancellationToken: cancellationToken);
         }
+
+        public Task PublishAsync<TIntegrationEvent>(TIntegrationEvent integrationEvent, IDictionary<string, string?> headers, CancellationToken cancellationToken = default) where TIntegrationEvent : IIntegrationEvent
+        {
+            return _capPublisher.PublishAsync(name: integrationEvent.GetGenericTypeName(),
+                contentObj: integrationEvent,
+                headers: headers,
+                cancellationToken: cancellationToken);
+        }
     }
 }

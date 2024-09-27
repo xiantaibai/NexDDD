@@ -17,4 +17,9 @@
 	  <ProjectReference Include="..\YS.Provider.EntityFrameworkCore\YSCore.Provider.EntityFrameworkCore.csproj" />
 	  <ProjectReference Include="..\YSCore.Base\YSCore.Base.csproj" />
 	</ItemGroup>
+
+
+	<ItemGroup>
+	  <Folder Include="ObjectMethodExecutor\" />
+	</ItemGroup>
 </Project>
