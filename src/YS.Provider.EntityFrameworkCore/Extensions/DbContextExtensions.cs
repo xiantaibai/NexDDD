@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YSCore.Base.DatabaseAccessor;
+using YSCore.Base.Pagelist;
 
 namespace YSCore.Provider.EntityFrameworkCore.Extensions
 {
@@ -46,6 +47,24 @@ namespace YSCore.Provider.EntityFrameworkCore.Extensions
                     property.SetValue(entity, true);
                 }
             }
+        }
+
+        public static PagedList<T> ToPagedList<T>(this List<T> source, int pageNumber, int pageSize)
+        {
+            var count = source.Count;
+            var items = source.Skip((pageNumber - 1) * pageSize)
+                              .Take(pageSize)
+                              .ToList();
+            return new PagedList<T>(items, count, pageNumber, pageSize);
+        }
+
+        public static async Task<PagedList<T>> ToPagedListAsync<T>(this IQueryable<T> source, int pageNumber, int pageSize)
+        {
+            var count = await source.CountAsync();
+            var items = await source.Skip((pageNumber - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToListAsync();
+            return new PagedList<T>(items, count, pageNumber, pageSize);
         }
     }
 }
