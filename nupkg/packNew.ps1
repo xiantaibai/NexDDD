@@ -106,10 +106,10 @@ if ($confirmation2.ToUpper() -eq 'Y'){
 
     Write-Output "All .nupkg files found:" $allNupkgFiles
 
-    $nupkgFiles= $allNupkgFiles | Where-Object { $_.Name.Contains($version) }
+    $nupkgFiles2 = $allNupkgFiles | Where-Object { $_.Name.Contains($version) }
 
-    Write-Output "Filtered version:$($version).nupkg files:" $nupkgFiles
-    foreach ($nupkgFile in $nupkgFiles) {
+    Write-Output "Filtered version:$($version).nupkg files:" $nupkgFiles2
+    foreach ($nupkgFile in $nupkgFiles2) {
        ##  Move-Item -Force $nupkgFile $packFolder 
         Write-Output "Publishing package: $($nupkgFile.FullName)"
         $fileName = Split-Path -Path $nupkgFile -Leaf
