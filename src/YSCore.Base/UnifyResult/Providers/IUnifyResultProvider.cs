@@ -18,7 +18,7 @@ namespace YSCore.Base.UnifyResult.Providers
         /// <param name="context"></param>
         /// <param name="metadata"></param>
         /// <returns></returns>
-        //IActionResult OnAuthorizeException(DefaultHttpContext context, ExceptionMetadata metadata);
+        IActionResult OnAuthorizeException(DefaultHttpContext context, ExceptionMetadata metadata);
 
         /// <summary>
         /// 异常返回值

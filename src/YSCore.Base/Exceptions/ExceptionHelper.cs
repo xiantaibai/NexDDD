@@ -6,6 +6,7 @@ using YSCore.Base.App;
 using YSCore.Base.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using YSCore.Base.Localization;
 
 namespace YSCore.Base.Exceptions
 {
@@ -125,7 +126,7 @@ namespace YSCore.Base.Exceptions
             var realErrorMessage = errorMessage;
 
             // 多语言处理
-            // realErrorMessage = L.Text == null ? realErrorMessage : L.Text[realErrorMessage];
+            realErrorMessage = L.Text == null ? realErrorMessage : L.Text[realErrorMessage];
 
             // 判断是否隐藏错误码
             var msg = (hideErrorCode == true || _friendlyExceptionSettings.HideErrorCode == true || string.IsNullOrWhiteSpace(errorCode)
