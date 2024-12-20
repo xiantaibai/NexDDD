@@ -21,6 +21,7 @@
 	<ItemGroup>
 	  <Folder Include="Behaviors\" />
 	  <Folder Include="DataValidation\Internal\" />
+	  <Folder Include="DependencyInjection\Attributes\" />
 	  <Folder Include="Exceptions\" />
 	</ItemGroup>
 </Project>
