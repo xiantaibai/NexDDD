@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YSCore.Base.MultiTenants.Services;
 
 namespace YSCore.Base.MultiTenants
 {
@@ -18,6 +19,12 @@ namespace YSCore.Base.MultiTenants
         public TenantBuilder(IServiceCollection services)
         {
             _services = services;
+        }
+
+        public TenantBuilder<T> WithClaimsPrincipalStrategy<V>() where V : class, IClaimsPrincipalStrategy
+        {
+            _services.TryAddSingleton(typeof(IClaimsPrincipalStrategy), typeof(V));
+            return this;
         }
 
         /// <summary>
@@ -34,13 +41,16 @@ namespace YSCore.Base.MultiTenants
         }
 
         /// <summary>
-        /// 注册HttpContext
+        /// 注册 默认实现
         /// </summary>
         /// <returns></returns>
-        public TenantBuilder<T> WithHttpContextResolver()
+        public TenantBuilder<T> WithDefaultResolver()
         {
+            WithClaimsPrincipalStrategy<DefaultClaimsPrincipalStrategy>();
             return WithResolver<HttpContextTenantResolver>();
         }
+
+
 
         /// <summary>
         /// 注册 存储方式,必须为单例
@@ -60,8 +70,6 @@ namespace YSCore.Base.MultiTenants
         /// <returns></returns>
         public TenantBuilder<T> WithDefaultStore()
         {
-            //#var service = new DefaultTenantStore<T>();
-            //_services.TryAddScoped<ITenantStore<T>>(service);
             return WithStore<DefaultTenantStore<T>>();
         }
 

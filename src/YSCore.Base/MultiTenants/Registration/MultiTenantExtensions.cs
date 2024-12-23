@@ -36,7 +36,9 @@ namespace YSCore.Base.MultiTenants
         /// <returns></returns>
         public static TenantBuilder<Tenant> AddMultiTenancy(this IServiceCollection services, Action<TenantSettings<Tenant>>? configure = null)
         {
-            return AddMultiTenancy<Tenant>(services, configure);
+            return AddMultiTenancy<Tenant>(services, configure)
+                .WithDefaultResolver()
+                .WithDefaultStore();
         }
 
 
