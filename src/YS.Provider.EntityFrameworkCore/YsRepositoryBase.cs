@@ -14,9 +14,7 @@ namespace YS.Provider.EntityFrameworkCore
         where TEntity : Entity, IAggregateRoot 
         where TDbContext : DbContext, IUnitOfWork
     {
-        protected virtual TDbContext DbContext { get; set; }
-
-        //protected YsRepositoryBase(TDbContext context) => DbContext = context;
+        //protected virtual TDbContext DbContext { get; set; }
         protected YsRepositoryBase(TDbContext context) : base(context)
         {
         }
