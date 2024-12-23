@@ -6,15 +6,21 @@ using System.Text;
 using System.Threading.Tasks;
 using YSCore.Base.DatabaseAccessor;
 using YSCore.Base.DatabaseAccessor.Repositories;
+using YSCore.Provider.EntityFrameworkCore.Repository;
 
 namespace YS.Provider.EntityFrameworkCore
 {
-    public abstract class YsRepositoryBase<TEntity, TDbContext> : IYsRepository<TEntity>
-        where TEntity : Entity, IAggregateRoot where TDbContext : DbContext, IUnitOfWork
+    public abstract class YsRepositoryBase<TEntity, TDbContext> : ReadableRepository<TEntity, TDbContext>, IYsRepository<TEntity>
+        where TEntity : Entity, IAggregateRoot 
+        where TDbContext : DbContext, IUnitOfWork
     {
         protected virtual TDbContext DbContext { get; set; }
 
-        protected YsRepositoryBase(TDbContext context) => DbContext = context;
+        //protected YsRepositoryBase(TDbContext context) => DbContext = context;
+        protected YsRepositoryBase(TDbContext context) : base(context)
+        {
+        }
+
         public virtual IUnitOfWork UnitOfWork => DbContext;
 
         public virtual TEntity Add(TEntity entity) => DbContext.Add(entity).Entity;

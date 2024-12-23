@@ -10,7 +10,8 @@ namespace YSCore.Base.DatabaseAccessor.Repositories
     /// 仓储接口,必须继承 聚合根
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public interface IYsRepository<TEntity> where TEntity : notnull, Entity, IAggregateRoot
+    public interface IYsRepository<TEntity> : IReadableRepository<TEntity>
+        where TEntity : notnull, Entity, IAggregateRoot
     {
         /// <summary>
         /// 获取工作单元对象
