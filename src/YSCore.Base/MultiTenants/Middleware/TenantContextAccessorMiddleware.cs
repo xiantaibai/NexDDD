@@ -34,7 +34,7 @@ namespace YSCore.Base.MultiTenants.Middleware
                 throw new InvalidOperationException("Tenant identifier could not be resolved using configured strategy");
 
             var tenant = await TenantResolver.TryGetAsync(identifier);
-            if (tenant == null)
+            if (tenant == null && identifier != 0)
                 throw new InvalidOperationException($"No tenant found matching '{identifier}'");
 
             TenantAccessor.TenantInfo ??= tenant;
