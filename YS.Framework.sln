@@ -43,7 +43,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DistributedTransactions", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YS.Provider.Cap", "src\YS.Provider.Cap\YS.Provider.Cap.csproj", "{5ADCB59B-C4D8-47B6-992A-634C48D2054C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YS.Provider.Cap.Mysql", "src\YS.Provider.Cap.Mysql\YS.Provider.Cap.Mysql.csproj", "{90C45DFF-036B-45EC-B0FD-C57E2DE2FF48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YS.Provider.Cap.Mysql", "src\YS.Provider.Cap.Mysql\YS.Provider.Cap.Mysql.csproj", "{90C45DFF-036B-45EC-B0FD-C57E2DE2FF48}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B5DC0C4A-3FD3-4386-92F4-08AFB8E1E306}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testApi", "test\testApi\testApi.csproj", "{F2ECC520-4114-47B8-A060-8FAFE370E3AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YSCore.Provider.SharedingCore", "src\YSCore.Provider.SharedingCore\YSCore.Provider.SharedingCore.csproj", "{98D1AD8C-18D9-4C95-9A8B-8CC75F08D13D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +77,14 @@ Global
 		{90C45DFF-036B-45EC-B0FD-C57E2DE2FF48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90C45DFF-036B-45EC-B0FD-C57E2DE2FF48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90C45DFF-036B-45EC-B0FD-C57E2DE2FF48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2ECC520-4114-47B8-A060-8FAFE370E3AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2ECC520-4114-47B8-A060-8FAFE370E3AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2ECC520-4114-47B8-A060-8FAFE370E3AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2ECC520-4114-47B8-A060-8FAFE370E3AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98D1AD8C-18D9-4C95-9A8B-8CC75F08D13D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98D1AD8C-18D9-4C95-9A8B-8CC75F08D13D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98D1AD8C-18D9-4C95-9A8B-8CC75F08D13D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98D1AD8C-18D9-4C95-9A8B-8CC75F08D13D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +99,8 @@ Global
 		{3C7E163A-586E-44CF-8CA4-40377BD648C4} = {5007320D-9315-476D-9621-6F7B61FD14DB}
 		{5ADCB59B-C4D8-47B6-992A-634C48D2054C} = {3C7E163A-586E-44CF-8CA4-40377BD648C4}
 		{90C45DFF-036B-45EC-B0FD-C57E2DE2FF48} = {3C7E163A-586E-44CF-8CA4-40377BD648C4}
+		{F2ECC520-4114-47B8-A060-8FAFE370E3AD} = {B5DC0C4A-3FD3-4386-92F4-08AFB8E1E306}
+		{98D1AD8C-18D9-4C95-9A8B-8CC75F08D13D} = {99E24B63-6E9A-4462-875C-35452D768B5E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {88FC0A23-724E-4E57-ABC4-768B7793685B}

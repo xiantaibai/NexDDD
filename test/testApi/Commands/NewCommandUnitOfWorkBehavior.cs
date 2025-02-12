@@ -1,0 +1,62 @@
+using MediatR;
+using YSCore.Provider.EntityFrameworkCore;
+using YSCore.Base.Diagnostics;
+using YSCore.Base.Events;
+
+namespace testApi.Commands
+{
+    public class NewCommandUnitOfWorkBehavior<TCommand, TResponse> : IPipelineBehavior<TCommand, TResponse>
+        where TCommand : IBaseCommand
+    {
+        private readonly ITransactionUnitOfWork _unitOfWork;
+        private readonly ILogger<NewCommandUnitOfWorkBehavior<TCommand, TResponse>> _logger;
+
+        public NewCommandUnitOfWorkBehavior(ITransactionUnitOfWork unitOfWork,ILogger<NewCommandUnitOfWorkBehavior<TCommand, TResponse>> logger)
+        {
+            _unitOfWork = unitOfWork;
+            _logger = logger;
+        }
+
+        public async Task<TResponse> Handle(TCommand request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+        {
+            var cmdType = typeof(TCommand);
+            var commandName = cmdType.FullName ?? cmdType.Name;
+            Guid id = Guid.NewGuid();
+            if (_unitOfWork.CurrentTransaction != null)
+            {
+                try
+                {
+                    _logger.LogInformation($"事务开始:{commandName},Id:{id},参数:{@request}");
+                    var response = await next();
+                    _logger.LogInformation($"事务结束:{commandName},Id:{id},参数:{@request}");
+                    await _unitOfWork.SaveEntitiesAsync(cancellationToken);
+                    return response;
+                }
+                catch (Exception e)
+                {
+                    // WriteCommandError(new CommandError(id, commandName, request, e));
+                    _logger.LogError(e,$"事务异常:{commandName},Id:{id},参数:{@request}");
+                    throw;
+                }
+            }
+
+
+            await using var transaction = _unitOfWork.BeginTransaction();
+            try
+            {
+                _logger.LogInformation($"事务开始:{commandName},Id:{id},参数:{@request}");
+                var response = await next();
+                _logger.LogInformation($"事务结束:{commandName},Id:{id},参数:{@request}");
+                await _unitOfWork.SaveEntitiesAsync(cancellationToken);
+                await _unitOfWork.CommitAsync(cancellationToken);
+                return response;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e,$"事务异常:{commandName},Id:{id},参数:{@request}");
+                await _unitOfWork.RollbackAsync(cancellationToken);
+                throw;
+            }
+        }
+    }
+}

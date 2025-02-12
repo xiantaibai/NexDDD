@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YS.Provider.EntityFrameworkCore.ValueGenerators
+namespace YSCore.Provider.EntityFrameworkCore.ValueGenerators
 {
     public class UtcDateTimeGenerator : ValueGenerator<DateTime>
     {

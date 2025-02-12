@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YSCore.Base.DatabaseAccessor;
 
-namespace YS.Provider.EntityFrameworkCore
+namespace YSCore.Provider.EntityFrameworkCore
 {
     public interface ITransactionUnitOfWork : IUnitOfWork
     {

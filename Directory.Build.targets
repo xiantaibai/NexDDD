@@ -1,64 +1,65 @@
 <Project>
-  <PropertyGroup>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <FrameworkVersion>6.0.0</FrameworkVersion>
-    <ExtensionsVersion>6.0.0</ExtensionsVersion>
-    <EntityFrameworkVersion>7.0.11</EntityFrameworkVersion>
-    <NpgsqlEntityFrameworkCorePostgreSQLVersion>7.0.11</NpgsqlEntityFrameworkCorePostgreSQLVersion>
-    <PomeloVersion>7.0.0</PomeloVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <FrameworkVersion>8.0.0</FrameworkVersion>
-    <ExtensionsVersion>8.0.0</ExtensionsVersion>
-    <EntityFrameworkVersion>8.0.7</EntityFrameworkVersion>
-    <NpgsqlEntityFrameworkCorePostgreSQLVersion>8.0.0-rc.2</NpgsqlEntityFrameworkCorePostgreSQLVersion>
-    <PomeloVersion>8.0.2</PomeloVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <!--microsoft extensions -->
-    <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="$(ExtensionsVersion)"/>
-    <PackageReference Update="Microsoft.Extensions.Configuration" Version="$(ExtensionsVersion)"/>
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsVersion)"/>
-    <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion)"/>
-    <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="$(ExtensionsVersion)"/>
-    <PackageReference Update="Microsoft.Extensions.Hosting" Version="$(ExtensionsVersion)"/>
-    <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="$(ExtensionsVersion)"/>
-    <PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)"/>
-    <PackageReference Update="Microsoft.Extensions.Logging" Version="$(ExtensionsVersion)"/>
-    <PackageReference Update="Microsoft.Extensions.Logging.Console" Version="$(ExtensionsVersion)"/>
-    <PackageReference Update="Microsoft.Extensions.Primitives" Version="$(ExtensionsVersion)"/>
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<FrameworkVersion>6.0.0</FrameworkVersion>
+		<ExtensionsVersion>6.0.0</ExtensionsVersion>
+		<EntityFrameworkVersion>7.0.11</EntityFrameworkVersion>
+		<NpgsqlEntityFrameworkCorePostgreSQLVersion>7.0.11</NpgsqlEntityFrameworkCorePostgreSQLVersion>
+		<PomeloVersion>7.0.0</PomeloVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<FrameworkVersion>8.0.0</FrameworkVersion>
+		<ExtensionsVersion>8.0.0</ExtensionsVersion>
+		<EntityFrameworkVersion>8.0.13</EntityFrameworkVersion>
+		<NpgsqlEntityFrameworkCorePostgreSQLVersion>8.0.11</NpgsqlEntityFrameworkCorePostgreSQLVersion>
+		<PomeloVersion>8.0.2</PomeloVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<!--microsoft extensions -->
+		<PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="$(ExtensionsVersion)"/>
+		<PackageReference Update="Microsoft.Extensions.Configuration" Version="$(ExtensionsVersion)"/>
+		<PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsVersion)"/>
+		<PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="$(ExtensionsVersion)"/>
+		<PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="$(ExtensionsVersion)"/>
+		<PackageReference Update="Microsoft.Extensions.Hosting" Version="$(ExtensionsVersion)"/>
+		<PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="$(ExtensionsVersion)"/>
+		<PackageReference Update="Microsoft.Extensions.Options" Version="$(ExtensionsVersion)"/>
+		<PackageReference Update="Microsoft.Extensions.Logging" Version="$(ExtensionsVersion)"/>
+		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="$(ExtensionsVersion)"/>
+		<PackageReference Update="Microsoft.Extensions.Primitives" Version="$(ExtensionsVersion)"/>
 
-    <!--microsoft asp.net core -->
-    <PackageReference Update="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(FrameworkVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(FrameworkVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.Identity" Version="$(FrameworkVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(FrameworkVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="$(FrameworkVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.Authentication.Certificate" Version="$(FrameworkVersion)"/>
-    <PackageReference Update="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="$(FrameworkVersion)" />
-    <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(FrameworkVersion)"/>
-    <PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-    <!--microsoft entity framework -->
-    <PackageReference Update="Microsoft.EntityFrameworkCore" Version="$(EntityFrameworkVersion)"/>
-    <PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="$(EntityFrameworkVersion)"/>
-    <PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EntityFrameworkVersion)"/>
-    <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="$(EntityFrameworkVersion)"/>
-    <PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EntityFrameworkVersion)"/>
-    <PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="$(EntityFrameworkVersion)" PrivateAssets="All"/>
-    <PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlEntityFrameworkCorePostgreSQLVersion)" />
-    <PackageReference Update="Pomelo.EntityFrameworkCore.MySql" Version="$(PomeloVersion)"/>
+		<!--microsoft asp.net core -->
+		<PackageReference Update="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(FrameworkVersion)"/>
+		<PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(FrameworkVersion)"/>
+		<PackageReference Update="Microsoft.AspNetCore.Identity" Version="$(FrameworkVersion)"/>
+		<PackageReference Update="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="$(FrameworkVersion)"/>
+		<PackageReference Update="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="$(FrameworkVersion)"/>
+		<PackageReference Update="Microsoft.AspNetCore.Authentication.Certificate" Version="$(FrameworkVersion)"/>
+		<PackageReference Update="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="$(FrameworkVersion)" />
+		<PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(FrameworkVersion)"/>
+		<PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
+		<!--microsoft entity framework -->
+		<PackageReference Update="Microsoft.EntityFrameworkCore" Version="$(EntityFrameworkVersion)"/>
+		<PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="$(EntityFrameworkVersion)"/>
+		<PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EntityFrameworkVersion)"/>
+		<PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="$(EntityFrameworkVersion)"/>
+		<PackageReference Update="Microsoft.EntityFrameworkCore.SqlServer" Version="$(EntityFrameworkVersion)"/>
+		<PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="$(EntityFrameworkVersion)" PrivateAssets="All"/>
+		<PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlEntityFrameworkCorePostgreSQLVersion)" />
+		<PackageReference Update="Pomelo.EntityFrameworkCore.MySql" Version="$(PomeloVersion)"/>
 
-	<!-- EFCoreSharding -->
-    <PackageReference Update="MediatR" Version="12.3.0" />
-	<PackageReference Update="Yitter.IdGenerator" Version="1.0.14" />
-	<PackageReference Update="FluentValidation.AspNetCore" Version="11.3.0" />
+		<!-- EFCoreSharding -->
+		<PackageReference Update="ShardingCore" Version="7.8.1.23" />
+		<PackageReference Update="MediatR" Version="12.3.0" />
+		<PackageReference Update="Yitter.IdGenerator" Version="1.0.14" />
+		<PackageReference Update="FluentValidation.AspNetCore" Version="11.3.0" />
 
-	<PackageReference Update="DotNetCore.CAP" Version="8.2.0"/>
-	<PackageReference Update="DotNetCore.CAP.MySql" Version="8.2.0" />
-	<PackageReference Update="DotNetCore.CAP.PostgreSql" Version="8.2.0" />
-	<PackageReference Update="DotNetCore.CAP.RabbitMQ" Version="8.2.0" />
-	<PackageReference Update="DotNetCore.CAP.Dashboard" Version="8.2.0" />
-  </ItemGroup>
+		<PackageReference Update="DotNetCore.CAP" Version="8.2.0"/>
+		<PackageReference Update="DotNetCore.CAP.MySql" Version="8.2.0" />
+		<PackageReference Update="DotNetCore.CAP.PostgreSql" Version="8.2.0" />
+		<PackageReference Update="DotNetCore.CAP.RabbitMQ" Version="8.2.0" />
+		<PackageReference Update="DotNetCore.CAP.Dashboard" Version="8.2.0" />
+	</ItemGroup>
 </Project>

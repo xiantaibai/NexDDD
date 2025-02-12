@@ -8,7 +8,7 @@ using YSCore.Base.DatabaseAccessor;
 using YSCore.Base.DatabaseAccessor.Repositories;
 using YSCore.Provider.EntityFrameworkCore.Repository;
 
-namespace YS.Provider.EntityFrameworkCore
+namespace YSCore.Provider.EntityFrameworkCore
 {
     public abstract class YsRepositoryBase<TEntity, TDbContext> : ReadableRepository<TEntity, TDbContext>, IYsRepository<TEntity>
         where TEntity : Entity, IAggregateRoot 

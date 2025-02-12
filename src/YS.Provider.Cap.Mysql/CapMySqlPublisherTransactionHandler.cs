@@ -1,8 +1,8 @@
-﻿using DotNetCore.CAP;
+using DotNetCore.CAP;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using YS.Provider.EntityFrameworkCore;
+using YSCore.Provider.EntityFrameworkCore;
 
 namespace YS.Provider.Cap.Mysql
 {

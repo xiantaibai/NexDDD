@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using YSCore.Base.Diagnostics;
 using YSCore.Base.Events;
 
-namespace YS.Provider.EntityFrameworkCore.Behaviors
+namespace YSCore.Provider.EntityFrameworkCore.Behaviors
 {
     internal class CommandUnitOfWorkBehavior<TCommand, TResponse> : IPipelineBehavior<TCommand, TResponse>
         where TCommand : IBaseCommand

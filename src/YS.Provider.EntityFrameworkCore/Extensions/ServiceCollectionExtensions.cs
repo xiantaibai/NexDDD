@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using YSCore.Base.DatabaseAccessor;
 using YSCore.Base.DatabaseAccessor.Repositories;
-using YS.Provider.EntityFrameworkCore.Behaviors;
+using YSCore.Provider.EntityFrameworkCore.Behaviors;
 
-namespace YS.Provider.EntityFrameworkCore.Extensions
+namespace YSCore.Provider.EntityFrameworkCore.Extensions
 {
     public static class ServiceCollectionExtensions
     {

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using YS.Provider.EntityFrameworkCore;
+using YSCore.Provider.EntityFrameworkCore;
 using YSCore.Base.DatabaseAccessor;
 using YSCore.Base.DatabaseAccessor.Filter;
 using YSCore.Base.MultiTenants;
@@ -32,10 +32,11 @@ namespace YSCore.Provider.EntityFrameworkCore
         {
             base.OnModelCreating(modelBuilder);
             // 租户 过滤器
-            if (TenantId > 0)
+            if (TenantId == 0)
             {
-                modelBuilder.AddQueryFilter<ITenantIdFilter>(x => x.TenantId == TenantId);
+                throw new ArgumentException("多租户标识为空");
             }
+            modelBuilder.AddQueryFilter<ITenantIdFilter>(x => x.TenantId == TenantId);
         }
 
         protected internal override Task BeforeSaveEntitiesAsync(CancellationToken cancellationToken = default)

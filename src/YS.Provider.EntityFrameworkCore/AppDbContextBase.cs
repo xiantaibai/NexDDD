@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using YSCore.Base.DatabaseAccessor;
 using YSCore.Base.Diagnostics;
-using YS.Provider.EntityFrameworkCore.Extensions;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 using System.Xml;
 using System.Linq.Expressions;
@@ -18,7 +17,7 @@ using YSCore.Base.DatabaseAccessor.Filter;
 using Microsoft.VisualBasic;
 using YSCore.Provider.EntityFrameworkCore.Extensions;
 
-namespace YS.Provider.EntityFrameworkCore
+namespace YSCore.Provider.EntityFrameworkCore
 {
     public class AppDbContextBase : DbContext, ITransactionUnitOfWork
     {

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using YS.Provider.Snowflake;
 
-namespace YS.Provider.EntityFrameworkCore.ValueGenerators
+namespace YSCore.Provider.EntityFrameworkCore.ValueGenerators
 {
     public class IdGenerator : ValueGenerator<long>
     {
