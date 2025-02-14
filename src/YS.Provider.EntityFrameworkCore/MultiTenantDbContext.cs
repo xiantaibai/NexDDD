@@ -22,9 +22,9 @@ namespace YSCore.Provider.EntityFrameworkCore
     {
         public long TenantId { get; set; }
         private readonly ITenantContextAccessor<Tenant> _tenantProvider;
-        protected MultiTenantDbContext(DbContextOptions options, IMediator mediator, IServiceProvider provider) : base(options, mediator, provider)
+        protected MultiTenantDbContext(DbContextOptions options, IServiceProvider provider) : base(options, provider)
         {
-            _tenantProvider = provider.GetService<ITenantContextAccessor<Tenant>>();
+            _tenantProvider = GetService<ITenantContextAccessor<Tenant>>();
             TenantId = _tenantProvider == null ? 0 : _tenantProvider.TenantInfo.Id;
         }
 

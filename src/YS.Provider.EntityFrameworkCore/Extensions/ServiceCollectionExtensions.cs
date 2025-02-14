@@ -1,5 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using ShardingCore.Core.DbContextCreator;
+using ShardingCore.Core.ShardingConfigurations;
+using ShardingCore.TableExists.Abstractions;
+using ShardingCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +14,7 @@ using System.Threading.Tasks;
 using YSCore.Base.DatabaseAccessor;
 using YSCore.Base.DatabaseAccessor.Repositories;
 using YSCore.Provider.EntityFrameworkCore.Behaviors;
+using ShardingCore.Sharding;
 
 namespace YSCore.Provider.EntityFrameworkCore.Extensions
 {

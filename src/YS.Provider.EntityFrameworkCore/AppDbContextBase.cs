@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,16 +24,22 @@ namespace YSCore.Provider.EntityFrameworkCore
         private static readonly DiagnosticListener _diagnosticListener =
             new(YsNetCoreDiagnosticListenerNames.DiagnosticListenerName);
 
+        public IServiceProvider _serviceProvider;
+
         private readonly IMediator _mediator;
         readonly IPublisherTransactionHandler? _publisherTransactionFactory;
 
-        protected AppDbContextBase(DbContextOptions options, IMediator mediator, IServiceProvider provider) :
+        protected AppDbContextBase(DbContextOptions options, IServiceProvider provider) :
             base(options)
         {
-            _mediator = mediator;
-            _publisherTransactionFactory = provider.GetService<IPublisherTransactionHandler>();
+            _serviceProvider = provider;
+            _mediator = GetService<IMediator>();
+            _publisherTransactionFactory = GetService<IPublisherTransactionHandler>();
         }
 
+        // 获取服务
+        public T GetService<T>() where T : class
+            => _serviceProvider.GetService<T>();
 
         //protected virtual void ConfigureStronglyTypedIdValueConverter(ModelConfigurationBuilder configurationBuilder)
         //{
@@ -146,7 +152,7 @@ namespace YSCore.Provider.EntityFrameworkCore
 
         #region DiagnosticListener
 
-       void WriteTransactionBegin(Guid data)
+        void WriteTransactionBegin(Guid data)
         {
             if (_diagnosticListener.IsEnabled(YsNetCoreDiagnosticListenerNames.TransactionBegin))
             {
