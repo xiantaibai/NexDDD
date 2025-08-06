@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,5 +20,11 @@ namespace YSCore.Base.Integration
         /// 共享上下文数据
         /// </summary>
         public IDictionary<object, object> Properties { get; set; }
+
+        public IntegrationEventHandlerContext(IIntegrationEvent source, IDictionary<object, object> properties)
+        {
+            Source = source;
+            Properties = properties;
+        }
     }
 }

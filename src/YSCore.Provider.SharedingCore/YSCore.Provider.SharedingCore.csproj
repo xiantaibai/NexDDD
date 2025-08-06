@@ -13,11 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Repository\" />
-	  <Folder Include="ValueGenerators\" />
-	</ItemGroup>
-
-	<ItemGroup>
+	  <ProjectReference Include="..\YS.Provider.EntityFrameworkCore\YSCore.Provider.EntityFrameworkCore.csproj" />
 	  <ProjectReference Include="..\YS.Provider.Snowflake\YSCore.Provider.Snowflake.csproj" />
 	  <ProjectReference Include="..\YSCore.Base\YSCore.Base.csproj" />
 	</ItemGroup>

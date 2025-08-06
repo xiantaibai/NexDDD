@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
@@ -27,6 +27,42 @@ namespace YSCore.Provider.EntityFrameworkCore.Extensions
 
             builder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
             return builder.HasValueGenerator<UtcDateTimeGenerator>();
+        }
+
+        public static PropertyBuilder<DateTime> UseLocalDateTimeValueGenerator(
+        this PropertyBuilder<DateTime> builder)
+        {
+            builder = builder ?? throw new ArgumentNullException(nameof(builder));
+
+            builder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+            return builder.HasValueGenerator<LocalDateTimeGenerator>();
+        }
+
+        public static PropertyBuilder<DateTime?> UseLocalDateTimeValueGenerator(
+        this PropertyBuilder<DateTime?> builder)
+        {
+            builder = builder ?? throw new ArgumentNullException(nameof(builder));
+
+            builder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+            return builder.HasValueGenerator<LocalDateTimeGenerator>();
+        }
+
+        public static PropertyBuilder<DateTime> UseClockDateTimeValueGenerator(
+       this PropertyBuilder<DateTime> builder)
+        {
+            builder = builder ?? throw new ArgumentNullException(nameof(builder));
+
+            builder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+            return builder.HasValueGenerator<ClockDateTimeValueGenerator>();
+        }
+
+        public static PropertyBuilder<DateTime?> UseClockDateTimeValueGenerator(
+        this PropertyBuilder<DateTime?> builder)
+        {
+            builder = builder ?? throw new ArgumentNullException(nameof(builder));
+
+            builder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+            return builder.HasValueGenerator<ClockDateTimeValueGenerator>();
         }
 
         public static PropertyBuilder<long> UseSnowFlakeValueGenerator(

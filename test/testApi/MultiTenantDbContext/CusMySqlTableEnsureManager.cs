@@ -3,6 +3,10 @@ using ShardingCore.TableExists.Abstractions;
 using System.Data.Common;
 
 namespace testApi.MultiTenantDbContext;
+
+/// <summary>
+/// 自定表 初始化
+/// </summary>
 public class CusMySqlTableEnsureManager : AbstractTableEnsureManager
 {
 

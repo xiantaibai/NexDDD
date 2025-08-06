@@ -1,4 +1,4 @@
-﻿using DotNetCore.CAP;
+using DotNetCore.CAP;
 using DotNetCore.CAP.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -50,7 +50,8 @@ namespace YS.Provider.Cap
 
         private IEnumerable<ConsumerExecutorDescriptor> GetCapDescription(TypeInfo typeInfo, string capName)
         {
-            var method = typeInfo.DeclaredMethods.FirstOrDefault(x => x.Name == "HandleAsync");
+            var method = typeInfo.DeclaredMethods.FirstOrDefault(x => x.Name == "HandleAsync" &&
+            x.GetParameters().Any(p => p.ParameterType == typeof(IntegrationEventHandlerContext)));
             if (method == null) yield break;
 
             var topic = _capOptions.DefaultGroupName + "." + _capOptions.Version;

@@ -11,7 +11,7 @@ public class BlogTypeConfiguration : IEntityTypeConfiguration<Blog>
     {
         eb.ToTable("Blog");
         eb.HasKey(t => t.Id);
-        //eb.Property(t => t.Id).ValueGeneratedOnAdd().UseSnowFlakeValueGenerator();
+        eb.Property(t => t.Id).UseSnowFlakeValueGenerator();
         //eb.Property(t => t.CreateTime).ValueGeneratedOnAdd().UseUtcDateTimeValueGenerator();
         eb.Property(t => t.IsDelete).HasDefaultValue(false).IsRequired();
 

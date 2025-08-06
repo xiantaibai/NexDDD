@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Linq;
@@ -59,11 +59,9 @@ namespace YS.Provider.Cap
             }
 
             // 创建 IntegrationEventHandlerContext 实例
-            var handlerContext = new IntegrationEventHandlerContext
-            {
-                Source = integrationEvent,
-                Properties = message.Headers.ToDictionary(kvp => (object)kvp.Key, kvp => (object?)kvp.Value)
-            };
+            var handlerContext = new IntegrationEventHandlerContext(
+                integrationEvent, 
+                message.Headers.ToDictionary(kvp => (object)kvp.Key, kvp => (object?)kvp.Value));
 
             var parameterDescriptors = context.ConsumerDescriptor.Parameters;
             var executeParameters = new object?[parameterDescriptors.Count];

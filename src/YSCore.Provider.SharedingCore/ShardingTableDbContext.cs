@@ -1,15 +1,15 @@
-﻿using ShardingCore.Sharding.Abstractions;
+using ShardingCore.Sharding.Abstractions;
 using ShardingCore.Sharding;
 using Microsoft.EntityFrameworkCore;
 using ShardingCore.Core.VirtualRoutes.TableRoutes.RouteTails.Abstractions;
 using MediatR;
 using YSCore.Base.DatabaseAccessor.Filter;
-using YSCore.Provider.SharedingCore.Extensions;
 using Microsoft.EntityFrameworkCore.Storage;
 using YSCore.Base.DatabaseAccessor;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using YSCore.Base.Diagnostics;
+using YSCore.Provider.EntityFrameworkCore;
 
 namespace YSCore.Provider.SharedingCore
 {
@@ -21,13 +21,20 @@ namespace YSCore.Provider.SharedingCore
         private static readonly DiagnosticListener _diagnosticListener =
             new(YsNetCoreDiagnosticListenerNames.DiagnosticListenerName);
 
+        public IServiceProvider _serviceProvider;
         private readonly IMediator _mediator;
         private readonly IPublisherTransactionHandler? _publisherTransactionFactory;
-        public ShardingTableDbContext(DbContextOptions options, IMediator mediator, IServiceProvider provider) : base(options)
+        public ShardingTableDbContext(DbContextOptions options, IServiceProvider serviceProvider) : base(options)
         {
-            _mediator = mediator;
-            _publisherTransactionFactory = provider.GetService<IPublisherTransactionHandler>();
+            _serviceProvider = serviceProvider;
+            //_serviceProvider = GetService<IServiceProvider>();
+            _mediator = GetService<IMediator>();
+            _publisherTransactionFactory = GetService<IPublisherTransactionHandler>();
         }
+
+        // 获取服务
+        public T GetService<T>() where T : class
+            => _serviceProvider.GetService<T>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -69,7 +76,8 @@ namespace YSCore.Provider.SharedingCore
         {
             if (CurrentTransaction != null)
             {
-                await CurrentTransaction.CommitAsync(cancellationToken);
+                // await CurrentTransaction.CommitAsync(cancellationToken);
+                CurrentTransaction.Commit();
                 WriteTransactionCommit(CurrentTransaction.TransactionId);
                 CurrentTransaction = null;
             }
@@ -79,7 +87,8 @@ namespace YSCore.Provider.SharedingCore
         {
             if (CurrentTransaction != null)
             {
-                await CurrentTransaction.RollbackAsync(cancellationToken);
+                // await CurrentTransaction.RollbackAsync(cancellationToken);
+                CurrentTransaction.Rollback();
                 WriteTransactionRollback(CurrentTransaction.TransactionId);
                 CurrentTransaction = null;
             }
@@ -96,7 +105,8 @@ namespace YSCore.Provider.SharedingCore
                     {
                         // ensure field 'Id' initialized when new entity added
                         await BeforeSaveEntitiesAsync(cancellationToken);
-                        await base.SaveChangesAsync(cancellationToken);
+                        // await base.SaveChangesAsync(cancellationToken);
+                        base.SaveChanges();
                         await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
                         await CommitAsync(cancellationToken);
                         return true;
@@ -111,7 +121,8 @@ namespace YSCore.Provider.SharedingCore
             else
             {
                 await BeforeSaveEntitiesAsync(cancellationToken);
-                await base.SaveChangesAsync(cancellationToken);
+                // await base.SaveChangesAsync(cancellationToken);
+                base.SaveChanges();
                 await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
                 return true;
             }
