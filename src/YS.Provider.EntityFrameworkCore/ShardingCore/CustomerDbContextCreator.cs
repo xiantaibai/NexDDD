@@ -5,7 +5,7 @@ using ShardingCore.Core.RuntimeContexts;
 using ShardingCore.Core.ServiceProviders;
 using ShardingCore.Sharding.Abstractions;
 
-namespace YSCore.Provider.EntityFrameworkCore.ShardingCore;
+namespace YSCore.Provider.EntityFrameworkCore.ShardingCore
 {
     public class CustomerDbContextCreator : IDbContextCreator
     {
