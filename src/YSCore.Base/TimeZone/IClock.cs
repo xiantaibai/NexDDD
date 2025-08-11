@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace YSCore.Base.TimeZone
 {
+    /// <summary>
+    /// 时区转换
+    /// </summary>
     public interface IClock
     {
         /// <summary>
