@@ -56,10 +56,17 @@
 		<PackageReference Update="Yitter.IdGenerator" Version="1.0.14" />
 		<PackageReference Update="FluentValidation.AspNetCore" Version="11.3.0" />
 
+		<!-- Cap -->
 		<PackageReference Update="DotNetCore.CAP" Version="8.2.0"/>
 		<PackageReference Update="DotNetCore.CAP.MySql" Version="8.2.0" />
 		<PackageReference Update="DotNetCore.CAP.PostgreSql" Version="8.2.0" />
 		<PackageReference Update="DotNetCore.CAP.RabbitMQ" Version="8.2.0" />
 		<PackageReference Update="DotNetCore.CAP.Dashboard" Version="8.2.0" />
+
+		<!-- Redis -->
+		<PackageReference Update="StackExchange.Redis.Extensions.Core" Version="11.0.0" />
+		<PackageReference Update="StackExchange.Redis.Extensions.AspNetCore" Version="11.0.0" />
+		<PackageReference Update="StackExchange.Redis.Extensions.System.Text.Json" Version="11.0.0" />
+		<PackageReference Update="StackExchange.Redis.Extensions.Protobuf" Version="11.0.0" />
 	</ItemGroup>
 </Project>
