@@ -12,19 +12,23 @@ using System.Text.Json;
 namespace YSCore.Provider.Redis
 {
     /// <summary>
-    /// redis 帮助类
+    /// StackExchange redis 帮助类
     /// </summary>
-    public class RedisHelper
+    public class StackExchangeRedisHelper
     {
         private readonly IRedisDatabase _redis;
         private readonly IRedisDatabase _lockRedis; // 锁单独数据库（也可用同一个）
 
-        public RedisHelper(IRedisDatabase redis)
+        public StackExchangeRedisHelper(IRedisDatabase redis)
         {
             _redis = redis;
             _lockRedis = redis;
         }
 
+        /// <summary>
+        /// StackExchange.Redis.Extensions.Core IRedisDatabase
+        /// </summary>
+        /// <returns></returns>
         public IRedisDatabase GetRedisDatabase()
         {
             return _redis;

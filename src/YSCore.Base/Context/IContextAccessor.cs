@@ -42,7 +42,7 @@ namespace YSCore.Base.Context
             _logger = logger;
         }
 
-        public bool HasContext => _currentContext.Value != null;
+        public bool HasContext => this.Current != null;
 
         public TContext Current
         {

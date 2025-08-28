@@ -44,9 +44,54 @@ namespace YSCore.Provider.Redis
                 _ => throw new NotSupportedException($"不支持的序列化类型: {options.SerializeType}")
             };
 
-            sv.AddSingleton<RedisHelper>();
+            sv.AddSingleton<StackExchangeRedisHelper>();
 
             return sv;
+        }
+
+        /// <summary>
+        /// 注册 Redis 服务（从配置文件读取并绑定 RedisOptions，支持不同序列化方式）
+        /// </summary>
+        /// <param name="services">服务集合</param>
+        /// <param name="section">配置节名称，默认 RedisSettings</param>
+        public static IServiceCollection AddRedisCore(
+            this IServiceCollection services,
+            string section = "RedisSettings")
+        {
+
+            using var provider = services.BuildServiceProvider();
+            var configuration = provider.GetRequiredService<IConfiguration>();
+
+            // 绑定并验证配置
+            var redisOptions = new RedisOptions();
+            var configSection = configuration.GetSection(section);
+            if (!configSection.Exists())
+            {
+                throw new InvalidOperationException($"Configuration section '{section}' does not exist.");
+            }
+            configSection.Bind(redisOptions);
+
+            var optionsBuilder = services.AddOptions<RedisOptions>()
+                .Bind(configSection)
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            // 根据序列化类型注册
+            services = redisOptions.SerializeType switch
+            {
+                SerializeTypeEnum.TextJson =>
+                    services.AddStackExchangeRedisExtensions<SystemTextJsonSerializer>(redisOptions.Instances),
+
+                SerializeTypeEnum.Protobuf =>
+                    services.AddStackExchangeRedisExtensions<ProtobufSerializer>(redisOptions.Instances),
+
+                _ => throw new NotSupportedException($"不支持的序列化类型: {redisOptions.SerializeType}")
+            };
+
+            // Redis 帮助类
+            services.AddSingleton<StackExchangeRedisHelper>();
+
+            return services;
         }
     }
 }
