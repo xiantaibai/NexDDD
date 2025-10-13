@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System;
 using System.Collections.Generic;
@@ -11,15 +12,10 @@ namespace YSCore.Provider.EntityFrameworkCore.ValueGenerators
 {
     public class ClockDateTimeValueGenerator : ValueGenerator<DateTime>
     {
-        private readonly IClock _clock;
-        public ClockDateTimeValueGenerator(IClock clock)
-        {
-            _clock = clock;
-        }
-
         public override DateTime Next(EntityEntry entry)
         {
-            return _clock.Now;
+            var clock = entry.Context.GetService<IClock>();
+            return clock.Now;
         }
 
         public override bool GeneratesTemporaryValues => false;

@@ -2,3 +2,4 @@ src/YSCore.Base
 src/YS.Provider.Cap
 src/YS.Provider.Snowflake
 src/YS.Provider.EntityFrameworkCore
+src/YSCore.Provider.Redis

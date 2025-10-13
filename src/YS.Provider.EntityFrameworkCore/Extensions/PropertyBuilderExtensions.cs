@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YSCore.Provider.EntityFrameworkCore.ValueGenerators;
+using YSCore.Base.TimeZone;
 
 namespace YSCore.Provider.EntityFrameworkCore.Extensions
 {
@@ -15,7 +16,7 @@ namespace YSCore.Provider.EntityFrameworkCore.Extensions
         this PropertyBuilder<DateTime> builder)
         {
             builder = builder ?? throw new ArgumentNullException(nameof(builder));
-           
+
             builder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
             return builder.HasValueGenerator<UtcDateTimeGenerator>();
         }
@@ -53,6 +54,7 @@ namespace YSCore.Provider.EntityFrameworkCore.Extensions
             builder = builder ?? throw new ArgumentNullException(nameof(builder));
 
             builder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+            // return builder.HasValueGenerator((p, e) => new ClockDateTimeValueGenerator(clock));
             return builder.HasValueGenerator<ClockDateTimeValueGenerator>();
         }
 
@@ -63,6 +65,7 @@ namespace YSCore.Provider.EntityFrameworkCore.Extensions
 
             builder.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
             return builder.HasValueGenerator<ClockDateTimeValueGenerator>();
+            // return builder.HasValueGenerator((p, e) => new ClockDateTimeValueGenerator(clock));
         }
 
         public static PropertyBuilder<long> UseSnowFlakeValueGenerator(
