@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
 using YSCore.Base.Integration;
 
-namespace YS.Provider.Cap
+namespace YSCore.Provider.Cap
 {
     /// <summary>
     /// 替换Cap 原生的处理方法

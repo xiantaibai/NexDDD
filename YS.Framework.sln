@@ -41,9 +41,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{C3ED2A51
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DistributedTransactions", "DistributedTransactions", "{3C7E163A-586E-44CF-8CA4-40377BD648C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YS.Provider.Cap", "src\YS.Provider.Cap\YS.Provider.Cap.csproj", "{5ADCB59B-C4D8-47B6-992A-634C48D2054C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YSCore.Provider.Cap", "src\YS.Provider.Cap\YSCore.Provider.Cap.csproj", "{5ADCB59B-C4D8-47B6-992A-634C48D2054C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YS.Provider.Cap.Mysql", "src\YS.Provider.Cap.Mysql\YS.Provider.Cap.Mysql.csproj", "{90C45DFF-036B-45EC-B0FD-C57E2DE2FF48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YSCore.Provider.Cap.Mysql", "src\YS.Provider.Cap.Mysql\YSCore.Provider.Cap.Mysql.csproj", "{90C45DFF-036B-45EC-B0FD-C57E2DE2FF48}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B5DC0C4A-3FD3-4386-92F4-08AFB8E1E306}"
 EndProject
@@ -51,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testApi", "test\testApi\tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Job", "Job", "{01117928-C3E4-4F56-9D53-6C4C85B2F44A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YSCore.Provider.Redis", "src\YSCore.Provider.Redis\YSCore.Provider.Redis.csproj", "{F9191D9F-9419-405F-9CAF-11282862CC8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YSCore.Provider.Redis", "src\YSCore.Provider.Redis\YSCore.Provider.Redis.csproj", "{F9191D9F-9419-405F-9CAF-11282862CC8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

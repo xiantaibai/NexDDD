@@ -1,8 +1,8 @@
-﻿using DotNetCore.CAP;
+using DotNetCore.CAP;
 using YSCore.Base.Extensions;
 using YSCore.Base.Integration;
 
-namespace YS.Provider.Cap
+namespace YSCore.Provider.Cap
 {
     public class CapIntegrationEventPublisher : IIntegrationEventPublisher
     {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using YSCore.Provider.EntityFrameworkCore;
 
-namespace YS.Provider.Cap.Mysql
+namespace YSCore.Provider.Cap.Mysql
 {
     public class CapMySqlPublisherTransactionHandler : IPublisherTransactionHandler
     {

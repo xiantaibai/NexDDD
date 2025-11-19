@@ -1,4 +1,4 @@
-﻿using DotNetCore.CAP.Internal;
+using DotNetCore.CAP.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YSCore.Base.Integration;
 
-namespace YS.Provider.Cap
+namespace YSCore.Provider.Cap
 {
     public static class CapServiceExtensions
     {

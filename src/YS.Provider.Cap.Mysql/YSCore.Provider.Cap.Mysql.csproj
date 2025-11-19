@@ -11,7 +11,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\YS.Provider.Cap\YS.Provider.Cap.csproj" />
+		<ProjectReference Include="..\YS.Provider.Cap\YSCore.Provider.Cap.csproj" />
 	</ItemGroup>
 
 </Project>

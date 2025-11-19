@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
@@ -64,6 +64,7 @@ namespace YSCore.Base.Localization
             if (httpContext.IsWebSocketRequest() || httpContext.Response.HasStarted) return;
 
             var cultureInfo = new RequestCulture(culture);
+            // httpContext.Features.Set<IRequestCultureFeature>(new RequestCultureFeature(cultureInfo,null));
 
             // 修复 DateTime 问题
             Penetrates.FixedCultureDateTimeFormat(cultureInfo, AppHelper.GetOptions<LocalizationSettingsOptions>()?.DateTimeFormatCulture);

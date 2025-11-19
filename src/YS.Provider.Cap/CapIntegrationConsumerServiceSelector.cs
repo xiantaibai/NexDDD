@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using YSCore.Base.Extensions;
 using YSCore.Base.Integration;
 
-namespace YS.Provider.Cap
+namespace YSCore.Provider.Cap
 {
     /// <summary>
     /// Cap 消息订阅封装
