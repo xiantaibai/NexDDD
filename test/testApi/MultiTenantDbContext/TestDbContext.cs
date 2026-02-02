@@ -31,7 +31,7 @@ public class TestDbContext : ShardingTableDbContext
             throw new ArgumentNullException(nameof(modelBuilder));
         }
 
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(Blog).Assembly);
+        // modelBuilder.ApplyConfigurationsFromAssembly(typeof(Blog).Assembly);
         // 租户 过滤器
         // var TenantId = _tenantResolver.GetTenantId();
        

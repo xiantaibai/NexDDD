@@ -55,6 +55,7 @@
 		<PackageReference Update="MediatR" Version="12.3.0" />
 		<PackageReference Update="Yitter.IdGenerator" Version="1.0.14" />
 		<PackageReference Update="FluentValidation.AspNetCore" Version="11.3.0" />
+		<PackageReference Update="AsyncKeyedLock" Version="8.0.1" />
 
 		<!-- Cap -->
 		<PackageReference Update="DotNetCore.CAP" Version="8.2.0"/>
@@ -68,5 +69,6 @@
 		<PackageReference Update="StackExchange.Redis.Extensions.AspNetCore" Version="11.0.0" />
 		<PackageReference Update="StackExchange.Redis.Extensions.System.Text.Json" Version="11.0.0" />
 		<PackageReference Update="StackExchange.Redis.Extensions.Protobuf" Version="11.0.0" />
+		<PackageReference Update="DistributedLock.Redis" Version="1.0.3" />
 	</ItemGroup>
 </Project>

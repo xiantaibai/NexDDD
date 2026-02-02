@@ -27,6 +27,9 @@ using ShardingCore.TableCreator;
 using ShardingCore.Core.VirtualRoutes.Abstractions;
 using YSCore.Provider.EntityFrameworkCore;
 using testApi.Entites;
+using YSCore.Base.CommandLocks;
+using Microsoft.EntityFrameworkCore.Migrations;
+using YSCore.Base.DistributedLocks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,20 +53,21 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
 
-    cfg.AddOpenBehavior(typeof(NewCommandUnitOfWorkBehavior<,>));
+    cfg.AddCommandLockBehavior()
+    .AddOpenBehavior(typeof(NewCommandUnitOfWorkBehavior<,>));
     //cfg.AddUnitOfWorkBehaviors();
     //cfg.AddDataValidationBehavior()
     //.AddUnitOfWorkBehaviors();
 });
-
+builder.Services.AddCommandLocks(typeof(Program).Assembly); //注册所有的命令锁类型
 // 配置连接字符串
 var constr = "server=114.55.176.40;port=3307;database=ShardingTest;user=api;password=Aa!@#4567899;CharSet=utf8;sslmode=none;AllowLoadLocalInfile=true";
 
 builder.Services.AddShardingDbContext<TestDbContext>()
-    .UseRouteConfig(op =>
-    {
-        op.AddShardingTableRoute<BlogTableRoute2>();
-    })
+    //.UseRouteConfig(op =>
+    //{
+    //    op.AddShardingTableRoute<BlogTableRoute2>();
+    //})
     .UseConfig(op =>
     {
         op.ThrowIfQueryRouteNotMatch = false;
@@ -88,6 +92,11 @@ builder.Services.AddShardingDbContext<TestDbContext>()
                     .EnableDetailedErrors();
         });
 
+        op.UseShardingMigrationConfigure(b =>
+        {
+            b.ReplaceService<IMigrationsSqlGenerator, ShardingMySqlMigrationsSqlGenerator>();
+        });
+
         op.AddDefaultDataSource("ds0", constr);
     })
      .ReplaceService<ITableEnsureManager, CusMySqlTableEnsureManager>()
@@ -99,6 +108,9 @@ builder.Services.Replace(
 
 // 事务
 builder.Services.AddUnitOfWork<TestDbContext>();
+
+// 事务锁
+builder.Services.AddInMemoryDistributedLock();
 
 var app = builder.Build();
 
@@ -157,22 +169,22 @@ app.MapPost("/blog2", async ([FromServices] TestDbContext dbcontext, [FromBody] 
 .WithOpenApi();
 
 
-using (var serviceScope = app.Services.CreateScope())
-{
-    var defaultDbContext = serviceScope.ServiceProvider.GetService<TestDbContext>();
+//using (var serviceScope = app.Services.CreateScope())
+//{
+//    var defaultDbContext = serviceScope.ServiceProvider.GetService<TestDbContext>();
 
-    using (var tran = await defaultDbContext.Database.BeginTransactionAsync())
-    {
-        var name = Guid.NewGuid().ToString("n");
-        var code = "xxx1";
-        var blog = new Blog(name, code);
+//    using (var tran = await defaultDbContext.Database.BeginTransactionAsync())
+//    {
+//        var name = Guid.NewGuid().ToString("n");
+//        var code = "xxx1";
+//        var blog = new Blog(name, code);
 
-        await defaultDbContext.AddAsync(blog);
-        await defaultDbContext.SaveChangesAsync();
+//        await defaultDbContext.AddAsync(blog);
+//        await defaultDbContext.SaveChangesAsync();
 
-        await tran.CommitAsync();
-    }
-}
+//        await tran.CommitAsync();
+//    }
+//}
 
 app.Run();
 

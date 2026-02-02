@@ -8,6 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AsyncKeyedLock" />
 		<PackageReference Include="Microsoft.Extensions.Options" />
 		<PackageReference Include="MediatR" />
 		<PackageReference Include="Yitter.IdGenerator" />

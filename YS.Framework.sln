@@ -53,6 +53,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Job", "Job", "{01117928-C3E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YSCore.Provider.Redis", "src\YSCore.Provider.Redis\YSCore.Provider.Redis.csproj", "{F9191D9F-9419-405F-9CAF-11282862CC8B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DistributedLocks", "DistributedLocks", "{DF216DD8-5C85-43EC-9D98-17CD2E14A73F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YSCore.Provider.DistributedLocks.Redis", "src\YSCore.Provider.DistributedLocks.Redis\YSCore.Provider.DistributedLocks.Redis.csproj", "{91B1A92E-0DB0-42E0-BFBA-0CA24843E337}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +91,10 @@ Global
 		{F9191D9F-9419-405F-9CAF-11282862CC8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9191D9F-9419-405F-9CAF-11282862CC8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9191D9F-9419-405F-9CAF-11282862CC8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91B1A92E-0DB0-42E0-BFBA-0CA24843E337}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91B1A92E-0DB0-42E0-BFBA-0CA24843E337}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91B1A92E-0DB0-42E0-BFBA-0CA24843E337}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91B1A92E-0DB0-42E0-BFBA-0CA24843E337}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,6 +112,8 @@ Global
 		{F2ECC520-4114-47B8-A060-8FAFE370E3AD} = {B5DC0C4A-3FD3-4386-92F4-08AFB8E1E306}
 		{01117928-C3E4-4F56-9D53-6C4C85B2F44A} = {5007320D-9315-476D-9621-6F7B61FD14DB}
 		{F9191D9F-9419-405F-9CAF-11282862CC8B} = {99E24B63-6E9A-4462-875C-35452D768B5E}
+		{DF216DD8-5C85-43EC-9D98-17CD2E14A73F} = {5007320D-9315-476D-9621-6F7B61FD14DB}
+		{91B1A92E-0DB0-42E0-BFBA-0CA24843E337} = {DF216DD8-5C85-43EC-9D98-17CD2E14A73F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {88FC0A23-724E-4E57-ABC4-768B7793685B}
