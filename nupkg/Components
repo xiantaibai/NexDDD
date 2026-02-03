@@ -3,3 +3,4 @@ src/YS.Provider.Cap
 src/YS.Provider.Snowflake
 src/YS.Provider.EntityFrameworkCore
 src/YSCore.Provider.Redis
+src/YSCore.Provider.DistributedLocks.Redis
