@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Protobuf;
 using StackExchange.Redis.Extensions.System.Text.Json;
 
@@ -58,7 +59,6 @@ namespace YSCore.Provider.Redis
             this IServiceCollection services,
             string section = "RedisSettings")
         {
-
             using var provider = services.BuildServiceProvider();
             var configuration = provider.GetRequiredService<IConfiguration>();
 
@@ -87,6 +87,16 @@ namespace YSCore.Provider.Redis
 
                 _ => throw new NotSupportedException($"不支持的序列化类型: {redisOptions.SerializeType}")
             };
+
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                var opts = sp.GetRequiredService<IOptions<RedisOptions>>().Value;
+                var instance = opts.Instances.First();
+
+                var config = ConfigurationOptions.Parse(instance.ConnectionString);
+
+                return ConnectionMultiplexer.Connect(config);
+            });
 
             // Redis 帮助类
             services.AddSingleton<StackExchangeRedisHelper>();

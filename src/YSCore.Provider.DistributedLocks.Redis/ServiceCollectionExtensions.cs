@@ -20,5 +20,12 @@ namespace YSCore.Provider.DistributedLocks.Redis
                 new RedisLock(connectionMultiplexer.GetDatabase()));
             return services;
         }
+
+        public static IServiceCollection AddRedisLocks(this IServiceCollection services, IDatabase database)
+        {
+            services.AddSingleton<IDistributedLock>(p =>
+                new RedisLock(database));
+            return services;
+        }
     }
 }
