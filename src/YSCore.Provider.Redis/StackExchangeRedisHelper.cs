@@ -98,6 +98,112 @@ namespace YSCore.Provider.Redis
 
         #endregion
 
+        #region 递增递减 
+        /// <summary>
+        /// 自增 1（原子）
+        /// </summary>
+        public async Task<long> IncrementAsync(string key)
+        {
+            return await _redis.Database.StringIncrementAsync(key);
+        }
+
+        /// <summary>
+        /// 自减 1（原子）
+        /// </summary>
+        public async Task<long> DecrementAsync(string key)
+        {
+            return await _redis.Database.StringDecrementAsync(key);
+        }
+
+        /// <summary>
+        /// 指定增量递增
+        /// </summary>
+        public async Task<long> IncrementByAsync(string key, long value)
+        {
+            return await _redis.Database.StringIncrementAsync(key, value);
+        }
+
+        /// <summary>
+        /// 指定减量递减
+        /// </summary>
+        public async Task<long> DecrementByAsync(string key, long value)
+        {
+            return await _redis.Database.StringDecrementAsync(key, value);
+        }
+
+        /// <summary>
+        /// 严格递减, 当值不能扣减时返回 -1
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <param name="delta">扣减数量,不能扣减返回-1</param>
+        /// <returns></returns>
+        public async Task<long> TryDecrementAsync(string key, long delta = 1)
+        {
+            var db = _redis.Database;
+
+            const string script = @"
+            local v = redis.call('GET', KEYS[1])
+            if not v then
+                return -1
+            end
+
+            v = tonumber(v)
+            local d = tonumber(ARGV[1])
+
+            if v < d then
+                return -1
+            end
+
+            return redis.call('DECRBY', KEYS[1], d)
+            ";
+
+            return (long)await db.ScriptEvaluateAsync(
+                script,
+                new RedisKey[] { key },
+                new RedisValue[] { delta });
+        }
+
+        /// <summary>
+        /// 如果不存在则初始化并设置过期时间，再递增
+        /// 适合统计型 Key
+        /// </summary>
+        public async Task<long> IncrementWithExpireAsync(
+            string key,
+            long delta,
+            TimeSpan expiry)
+        {
+            var db = _redis.Database;
+
+            // Lua 保证原子
+            const string script = @"
+local v = redis.call('INCRBY', KEYS[1], ARGV[1])
+if v == tonumber(ARGV[1]) then
+    redis.call('EXPIRE', KEYS[1], ARGV[2])
+end
+return v";
+
+            return (long)await db.ScriptEvaluateAsync(
+                script,
+                new RedisKey[] { key },
+                new RedisValue[]
+                {
+            delta,
+            (long)expiry.TotalSeconds
+                });
+        }
+
+        /// <summary>
+        /// 获取当前计数
+        /// </summary>
+        public async Task<long?> GetCounterAsync(string key)
+        {
+            var value = await _redis.Database.StringGetAsync(key);
+            if (!value.HasValue)
+                return null;
+
+            return (long)value;
+        }
+        #endregion
 
         #region 分布式锁
 

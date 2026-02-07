@@ -138,6 +138,42 @@ namespace YSCore.Provider.EntityFrameworkCore.Extensions
             }
         }
 
+        public static async Task DispatchDomainEventsAsync<TContext>(this IMediator mediator, TContext ctx, CancellationToken cancellationToken = default)
+    where TContext : DbContext
+        {
+            var domainEntities = ctx.ChangeTracker
+                .Entries<Entity>()
+                .Where(x => x.Entity.GetDomainEvents().Any())
+                .ToList();
+
+            var domainEvents = domainEntities
+                .SelectMany(x => x.Entity.GetDomainEvents())
+                .ToList();
+
+            if (domainEvents.Count == 0)
+                return;
+
+            domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
+
+            foreach (var domainEvent in domainEvents)
+            {
+                Guid id = Guid.NewGuid();
+                var eventType = domainEvent.GetType();
+                var eventTypeName = eventType.FullName ?? eventType.Name;
+                try
+                {
+                    WriteDomainEventHandlerBegin(new DomainEventHandlerBegin(id, eventTypeName, domainEvent));
+                    await mediator.Publish(domainEvent, cancellationToken);
+                    WriteDomainEventHandlerEnd(new DomainEventHandlerEnd(id, eventTypeName, domainEvent));
+                }
+                catch (Exception e)
+                {
+                    WriteDomainEventError(new DomainEventHandlerError(id, eventTypeName, domainEvent, e));
+                    throw;
+                }
+            }
+        }
+
         static void WriteDomainEventHandlerBegin(DomainEventHandlerBegin data)
         {
             if (_diagnosticListener.IsEnabled(YsNetCoreDiagnosticListenerNames.DomainEventHandlerBegin))
