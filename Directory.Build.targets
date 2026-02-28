@@ -69,6 +69,6 @@
 		<PackageReference Update="StackExchange.Redis.Extensions.AspNetCore" Version="11.0.0" />
 		<PackageReference Update="StackExchange.Redis.Extensions.System.Text.Json" Version="11.0.0" />
 		<PackageReference Update="StackExchange.Redis.Extensions.Protobuf" Version="11.0.0" />
-		<PackageReference Update="DistributedLock.Redis" Version="1.0.3" />
+		<PackageReference Update="DistributedLock.Redis" Version="1.1.1" />
 	</ItemGroup>
 </Project>
