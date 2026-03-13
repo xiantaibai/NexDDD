@@ -54,11 +54,20 @@ namespace YSCore.Provider.Cap
             var message = context.DeliverMessage;
 
             var eventType = GetEventType(context.ConsumerDescriptor.ImplTypeInfo.AsType());
-            Console.WriteLine("订阅输出类型,消息内容:{0},类型:{1}", message.Value, eventType);
+#if DEBUG
+            Console.WriteLine("订阅输出类型,消息内容:{0},类型:{1},Message Type:{2}", message.Value, eventType, message.Value?.GetType());
             //var integrationEvent =
             //    (IIntegrationEvent)_serializer.Deserialize(message.Value, eventType);
-
-            var integrationEvent = message.Value as IIntegrationEvent;
+#endif
+            IIntegrationEvent integrationEvent;
+            if (message.Value is IIntegrationEvent evt)
+            {
+                integrationEvent = evt;
+            }
+            else
+            {
+                integrationEvent = (IIntegrationEvent)_serializer.Deserialize(message.Value, eventType);
+            }
             if (integrationEvent == null)
             {
                 throw new InvalidOperationException("Message content does not implement IIntegrationEvent");

@@ -1,5 +1,8 @@
+using MediatR;
 using Microsoft.Extensions.Logging;
 using testApi.Entites;
+using YS.Inventory.Application.Contracts.IntegrationEvents;
+using YS.Inventory.Application.Contracts.Inventory;
 using YSCore.Base.DomainEvent;
 using YSCore.Base.Integration;
 
@@ -17,5 +20,16 @@ public class CreateBlogDomainIntegrationEventHandler(ILogger<CreateBlogDomainInt
         logger.LogInformation("接受 消息队列数据,{data}", data);
 
         return Task.CompletedTask;
+    }
+}
+
+public class InventoryChangedIntegrationEventHandler(ILogger<InventoryChangedIntegrationEventHandler> logger) : IIntegrationEventHandler<InventoryChangedIntegrationEvent>
+{
+    public async Task HandleAsync(IntegrationEventHandlerContext eventData, CancellationToken cancellationToken = default)
+    {
+        var data = (InventoryChangedIntegrationEvent)eventData.Source;
+        var header = eventData.Properties;
+
+        logger.LogInformation("接受 消息队列数据,库存变更:{data}", data);
     }
 }

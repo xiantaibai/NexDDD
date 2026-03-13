@@ -22,4 +22,10 @@
     <ProjectReference Include="..\..\src\YSCore.Base\YSCore.Base.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="YS.Inventory.Application.Contracts">
+      <HintPath>..\..\..\..\YS.Backstage\ModuleBackstage\YS.Inventory\YS.Inventory.Application.Contracts\bin\Debug\net8.0\YS.Inventory.Application.Contracts.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
