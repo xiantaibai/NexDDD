@@ -12,7 +12,11 @@ public class CreateBlogDomainEventHandler(IIntegrationEventPublisher publisher) 
     {
         Console.WriteLine($"创建Blog 成功,{notification.blog.Name}");
 
-        await publisher.PublishAsync(new CreateBlogDomainIntegrationEvent(notification.blog.Name, notification.blog.Url));
+        IDictionary<string,string> headers=new Dictionary<string, string>();
+        headers.Add("userId","123456");
+        headers.Add("userName", "测试");
+
+        await publisher.PublishAsync(new CreateBlogDomainIntegrationEvent(notification.blog.Name, notification.blog.Url),headers);
 
         //return Task.CompletedTask;
     }

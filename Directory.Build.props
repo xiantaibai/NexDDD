@@ -1,12 +1,12 @@
 <Project>
 	<PropertyGroup>
-		<VersionPrefix>1.2.3</VersionPrefix>
+		<VersionPrefix>1.2.4</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 	</PropertyGroup>
 	<PropertyGroup>
 		<Authors>YSCore</Authors>
 		<Product>YSCore Framework</Product>
-		<Description>新增命令锁,Redis帮助类添加递增递减</Description>
+		<Description>集成事件Cap 支持 header传递</Description>
 		<owners>YSCore</owners>
 		<PackagePrefix>YSCore</PackagePrefix>
 		<PackageIconUrl></PackageIconUrl>
