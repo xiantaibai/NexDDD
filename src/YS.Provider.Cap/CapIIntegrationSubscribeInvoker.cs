@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
@@ -51,6 +52,11 @@ namespace YSCore.Provider.Cap
             var obj = GetInstance(provider, context);
 
             var message = context.DeliverMessage;
+
+            var eventType = GetEventType(context.ConsumerDescriptor.ImplTypeInfo.AsType());
+            Console.WriteLine("订阅输出类型,消息内容:{0},类型:{1}", message.Value, eventType);
+            //var integrationEvent =
+            //    (IIntegrationEvent)_serializer.Deserialize(message.Value, eventType);
 
             var integrationEvent = message.Value as IIntegrationEvent;
             if (integrationEvent == null)
@@ -150,6 +156,16 @@ namespace YSCore.Provider.Cap
                 return new ConsumerExecutedResult(resultObj, message.GetId(), callbackName, message.Headers);
             }
 
+        }
+
+        private static Type GetEventType(Type handlerType)
+        {
+            return handlerType
+                .GetInterfaces()
+                .First(x =>
+                    x.IsGenericType &&
+                    x.GetGenericTypeDefinition() == typeof(IIntegrationEventHandler<>))
+                .GetGenericArguments()[0];
         }
 
         private static object GetCapProvidedParameter(ParameterDescriptor parameterDescriptor, Message message,

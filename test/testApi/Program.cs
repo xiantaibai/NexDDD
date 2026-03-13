@@ -30,6 +30,7 @@ using testApi.Entites;
 using YSCore.Base.CommandLocks;
 using Microsoft.EntityFrameworkCore.Migrations;
 using YSCore.Base.DistributedLocks;
+using testApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -112,6 +113,8 @@ builder.Services.AddUnitOfWork<TestDbContext>();
 // 事务锁
 builder.Services.AddInMemoryDistributedLock();
 
+builder.Services.AddIntegrationEvent();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -192,3 +195,4 @@ internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
+

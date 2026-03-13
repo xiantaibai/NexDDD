@@ -56,15 +56,32 @@ namespace YSCore.Provider.Cap
 
             var topic = _capOptions.DefaultGroupName + "." + _capOptions.Version;
             // var capName = typeInfo.GetGenericTypeName();
+            var eventType = GetEventType(typeInfo);
 
-            var parameters = method.GetParameters()
-                   .Select(parameter => new ParameterDescriptor
-                   {
-                       Name = parameter.Name!,
-                       ParameterType = parameter.ParameterType,
-                       IsFromCap = parameter.GetCustomAttributes(typeof(FromCapAttribute)).Any()
-                                   || typeof(CancellationToken).IsAssignableFrom(parameter.ParameterType)
-                   }).ToList();
+            var parameters = new List<ParameterDescriptor>();
+            foreach (var parameter in method.GetParameters())
+            {
+                if (parameter.ParameterType == typeof(IntegrationEventHandlerContext))
+                {
+                    parameters.Add(new ParameterDescriptor
+                    {
+                        Name = parameter.Name!,
+                        ParameterType = eventType, // ★关键
+                        IsFromCap = false
+                    });
+                }
+                else
+                {
+                    parameters.Add(new ParameterDescriptor
+                    {
+                        Name = parameter.Name!,
+                        ParameterType = parameter.ParameterType,
+                        IsFromCap =
+                            parameter.GetCustomAttributes(typeof(FromCapAttribute)).Any()
+                            || typeof(CancellationToken).IsAssignableFrom(parameter.ParameterType)
+                    });
+                }
+            }
 
             yield return new ConsumerExecutorDescriptor
             {
@@ -78,6 +95,16 @@ namespace YSCore.Provider.Cap
                 TopicNamePrefix = _capOptions.TopicNamePrefix,
                 ServiceTypeInfo = typeInfo
             };
+        }
+
+        private static Type GetEventType(Type handlerType)
+        {
+            return handlerType
+                .GetInterfaces()
+                .First(x =>
+                    x.IsGenericType &&
+                    x.GetGenericTypeDefinition() == typeof(IIntegrationEventHandler<>))
+                .GetGenericArguments()[0];
         }
     }
 }
