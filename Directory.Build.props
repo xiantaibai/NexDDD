@@ -1,12 +1,12 @@
 <Project>
 	<PropertyGroup>
-		<VersionPrefix>1.2.4</VersionPrefix>
+		<VersionPrefix>1.2.5</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 	</PropertyGroup>
 	<PropertyGroup>
 		<Authors>YSCore</Authors>
 		<Product>YSCore Framework</Product>
-		<Description>集成事件Cap 支持 header传递</Description>
+		<Description>集成事件Cap 支持 header传递 2. 重试消费数据优化</Description>
 		<owners>YSCore</owners>
 		<PackagePrefix>YSCore</PackagePrefix>
 		<PackageIconUrl></PackageIconUrl>

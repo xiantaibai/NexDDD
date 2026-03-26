@@ -13,6 +13,7 @@ using DotNetCore.CAP.Messages;
 using DotNetCore.CAP.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
+using Microsoft.Extensions.Logging;
 using YSCore.Base.Integration;
 
 namespace YSCore.Provider.Cap
@@ -54,11 +55,7 @@ namespace YSCore.Provider.Cap
             var message = context.DeliverMessage;
 
             var eventType = GetEventType(context.ConsumerDescriptor.ImplTypeInfo.AsType());
-#if DEBUG
-            Console.WriteLine("订阅输出类型,消息内容:{0},类型:{1},Message Type:{2}", message.Value, eventType, message.Value?.GetType());
-            //var integrationEvent =
-            //    (IIntegrationEvent)_serializer.Deserialize(message.Value, eventType);
-#endif
+
             IIntegrationEvent integrationEvent;
             if (message.Value is IIntegrationEvent evt)
             {
