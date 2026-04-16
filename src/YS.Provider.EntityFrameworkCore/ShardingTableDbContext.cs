@@ -50,6 +50,14 @@ namespace YSCore.Provider.EntityFrameworkCore
 
             configurationBuilder.Properties<string>()
                                 .HaveMaxLength(256);
+
+            configurationBuilder
+               .Properties<decimal>()
+               .HavePrecision(18, 2);
+
+            configurationBuilder
+                .Properties<decimal?>()
+                .HavePrecision(18, 2);
         }
 
         public IRouteTail RouteTail { get; set; }

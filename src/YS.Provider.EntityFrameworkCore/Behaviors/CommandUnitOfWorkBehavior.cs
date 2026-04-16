@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YSCore.Base.Diagnostics;
 using YSCore.Base.Events;
+using YSCore.Base.Idempotency;
 
 namespace YSCore.Provider.EntityFrameworkCore.Behaviors
 {
@@ -46,6 +47,15 @@ namespace YSCore.Provider.EntityFrameworkCore.Behaviors
                 catch (Exception e)
                 {
                     WriteCommandError(new CommandError(id, commandName, request, e));
+
+                    // ⭐ 幂等处理
+                    if (request is IIdempotentPolicy<TResponse> policy
+                        && policy.IsIdempotent
+                        && policy.Match(e))
+                    {
+                        return policy.OnDuplicate();
+                    }
+
                     throw;
                 }
             }
@@ -64,6 +74,15 @@ namespace YSCore.Provider.EntityFrameworkCore.Behaviors
             catch (Exception e)
             {
                 WriteCommandError(new CommandError(id, commandName, request, e));
+                // ⭐ 幂等处理
+                if (request is IIdempotentPolicy<TResponse> policy
+                    && policy.IsIdempotent
+                    && policy.Match(e))
+                {
+                    await _unitOfWork.RollbackAsync(cancellationToken); // 仍需回滚
+                    return policy.OnDuplicate();
+                }
+
                 await _unitOfWork.RollbackAsync(cancellationToken);
                 throw;
             }
