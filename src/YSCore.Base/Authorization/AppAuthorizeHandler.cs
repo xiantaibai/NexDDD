@@ -120,24 +120,15 @@ namespace YSCore.Base.Authorization
         /// <returns></returns>
         private static async Task UnifyWrapper(DefaultHttpContext httpContext, Exception exception)
         {
-            // 尝试解析为友好异常
-            var friendlyException = exception as AppFriendlyException;
+            var exceptionMetadata = UnifyContext.GetExceptionMetadata(exception, httpContext);
 
             // 处理规范化结果
             if (!UnifyContext.CheckExceptionHttpContextNonUnify(httpContext, out var unifyRes))
             {
-                _ = UnifyContext.CheckVaildResult(unifyRes.OnAuthorizeException(httpContext, new ExceptionMetadata
-                {
-                    StatusCode = friendlyException?.StatusCode ?? StatusCodes.Status500InternalServerError,
-                    Errors = friendlyException?.ErrorMessage ?? exception.Message,
-                    Data = friendlyException?.Data,
-                    ErrorCode = friendlyException?.ErrorCode,
-                    OriginErrorCode = friendlyException?.OriginErrorCode,
-                    Exception = exception
-                }), out var data);
+                _ = UnifyContext.CheckVaildResult(unifyRes.OnAuthorizeException(httpContext, exceptionMetadata), out var data);
 
                 // 终止返回
-                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                httpContext.Response.StatusCode = exceptionMetadata.StatusCode;
                 await httpContext.Response.WriteAsJsonAsync(data);
             }
             else throw exception;

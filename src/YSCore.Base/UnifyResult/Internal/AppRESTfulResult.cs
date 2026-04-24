@@ -1,4 +1,4 @@
-﻿
+
 using YSCore.Base.Exceptions;
 
 namespace YSCore.Base.UnifyResult.Internal
@@ -34,6 +34,11 @@ namespace YSCore.Base.UnifyResult.Internal
         /// 时间戳
         /// </summary>
         public long Timestamp { get; set; }
+
+        /// <summary>
+        /// 请求追踪号
+        /// </summary>
+        public string TraceId { get; set; }
 
 
         internal static AppRESTfulResult<T> Failed(List<AppFriendlyException>? errors)

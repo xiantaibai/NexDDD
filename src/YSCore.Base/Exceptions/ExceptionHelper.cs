@@ -1,37 +1,20 @@
-﻿using Microsoft.Extensions.Options;
-using System.ComponentModel.DataAnnotations;
-using YSCore.Base.Exceptions.Extensions;
-using YSCore.Base.Exceptions.Options;
-using YSCore.Base.App;
-using YSCore.Base.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
+using YSCore.Base.App;
+using YSCore.Base.Exceptions.Extensions;
+using YSCore.Base.Exceptions.Options;
+using YSCore.Base.Extensions;
 using YSCore.Base.Localization;
 
 namespace YSCore.Base.Exceptions
 {
     /// <summary>
-    /// 异常帮助类
+    /// 异常帮助类。
     /// </summary>
     public static class ExceptionHelper
     {
-        /// <summary>
-        /// 友好异常设置
-        /// </summary>
-        private static readonly FriendlyExceptionSettingsOptions _friendlyExceptionSettings;
-
-        static ExceptionHelper()
-        {
-            _friendlyExceptionSettings = AppHelper.RootServices.GetService<IOptions<FriendlyExceptionSettingsOptions>>().Value;
-        }
-
-        /// <summary>
-        /// 抛出业务异常信息
-        /// </summary>
-        /// <param name="errorMessage"></param>
-        /// <param name="exceptionType"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
         public static AppFriendlyException Bah(string errorMessage, Exception exceptionType, params object[] args)
         {
             var friendlyException = AppFriendly(errorMessage, exceptionType, args).StatusCode(StatusCodes.Status400BadRequest);
@@ -39,12 +22,6 @@ namespace YSCore.Base.Exceptions
             return friendlyException;
         }
 
-        /// <summary>
-        /// 抛出业务异常信息
-        /// </summary>
-        /// <param name="errorMessage">异常消息</param>
-        /// <param name="args">String.Format 参数</param>
-        /// <returns>异常实例</returns>
         public static AppFriendlyException Bah(string errorMessage, params object[] args)
         {
             var friendlyException = AppFriendly(errorMessage, typeof(ValidationException), args).StatusCode(StatusCodes.Status400BadRequest);
@@ -52,54 +29,54 @@ namespace YSCore.Base.Exceptions
             return friendlyException;
         }
 
+        public static AppFriendlyException Bah(object errorCode, params object[] args)
+        {
+            var friendlyException = AppFriendly(errorCode, typeof(ValidationException), args).StatusCode(StatusCodes.Status400BadRequest);
+            friendlyException.ValidationException = true;
+            return friendlyException;
+        }
 
-
-        /// <summary>
-        /// 抛出业务异常信息
-        /// </summary>
-        /// <param name="errorCode">错误码</param>
-        /// <param name="args">String.Format 参数</param>
-        /// <returns>异常实例</returns>
-        //public static AppFriendlyException Bah(object errorCode, params object[] args)
-        //{
-        //    var friendlyException = AppFriendly(errorCode, typeof(ValidationException), args).StatusCode(StatusCodes.Status400BadRequest);
-        //    friendlyException.ValidationException = true;
-        //    return friendlyException;
-        //}
-
-        /// <summary>
-        /// 抛出字符串异常
-        /// </summary>
-        /// <param name="errorMessage">异常消息</param>
-        /// <param name="args">String.Format 参数</param>
-        /// <returns>异常实例</returns>
         public static AppFriendlyException AppFriendly(string errorMessage, params object[] args)
         {
-            var friendlyException = new AppFriendlyException(MontageErrorMessage(errorMessage, default, null, args), default);
+            var friendlyException = new AppFriendlyException(ResolveErrorMessage(errorMessage, default, null, args), default);
 
-            // 处理默认配置为业务异常问题
-            if (_friendlyExceptionSettings.ThrowBah == true)
+            if (Settings.ThrowBah == true)
             {
                 friendlyException.StatusCode(StatusCodes.Status400BadRequest);
                 friendlyException.ValidationException = true;
             }
+
+            return friendlyException;
+        }
+
+        public static AppFriendlyException AppFriendly(object errorCode, params object[] args)
+        {
+            var exceptionMessage = ResolveErrorMessage(default, errorCode, null, args);
+            var friendlyException = new AppFriendlyException(exceptionMessage, errorCode);
+
+            if (Settings.ThrowBah == true)
+            {
+                friendlyException.StatusCode(StatusCodes.Status400BadRequest);
+                friendlyException.ValidationException = true;
+            }
+
             return friendlyException;
         }
 
         public static AppFriendlyException AppFriendly(string errorMessage, Type exceptionType, params object[] args)
         {
-            var exceptionMessage = MontageErrorMessage(errorMessage, default, null, args);
+            var exceptionMessage = ResolveErrorMessage(errorMessage, default, null, args);
             return new AppFriendlyException(exceptionMessage, default,
                 Activator.CreateInstance(exceptionType, new object[] { exceptionMessage }) as Exception);
         }
 
-        /// <summary>
-        /// 抛出字符串异常
-        /// </summary>
-        /// <typeparam name="TException">具体异常类型</typeparam>
-        /// <param name="errorMessage">异常消息</param>
-        /// <param name="args">String.Format 参数</param>
-        /// <returns>异常实例</returns>
+        public static AppFriendlyException AppFriendly(object errorCode, Type exceptionType, params object[] args)
+        {
+            var exceptionMessage = ResolveErrorMessage(default, errorCode, null, args);
+            return new AppFriendlyException(exceptionMessage, errorCode,
+                Activator.CreateInstance(exceptionType, new object[] { exceptionMessage }) as Exception);
+        }
+
         public static AppFriendlyException AppFriendly<TException>(string errorMessage, params object[] args)
             where TException : class
         {
@@ -108,32 +85,164 @@ namespace YSCore.Base.Exceptions
 
         public static AppFriendlyException AppFriendly(string errorMessage, Exception exceptionType, params object[] args)
         {
-            var exceptionMessage = MontageErrorMessage(errorMessage, default, null, args);
+            var exceptionMessage = ResolveErrorMessage(errorMessage, default, null, args);
             return new AppFriendlyException(exceptionMessage, default, exceptionType);
         }
 
-        /// <summary>
-        /// 获取错误码字符串
-        /// </summary>
-        /// <param name="errorMessage"></param>
-        /// <param name="errorCode"></param>
-        /// <param name="hideErrorCode">隐藏错误码</param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        private static string MontageErrorMessage(string errorMessage, string errorCode, bool? hideErrorCode, params object[] args)
+        public static AppFriendlyException AppFriendly(object errorCode, Exception exceptionType, params object[] args)
         {
-            // 支持读取配置渲染
-            var realErrorMessage = errorMessage;
-
-            // 多语言处理
-            realErrorMessage = L.Text == null ? realErrorMessage : L.Text[realErrorMessage];
-
-            // 判断是否隐藏错误码
-            var msg = (hideErrorCode == true || _friendlyExceptionSettings.HideErrorCode == true || string.IsNullOrWhiteSpace(errorCode)
-                ? string.Empty
-                : $"[{errorCode}] ") + realErrorMessage;
-
-            return msg.Format(args);
+            var exceptionMessage = ResolveErrorMessage(default, errorCode, null, args);
+            return new AppFriendlyException(exceptionMessage, errorCode, exceptionType);
         }
+
+        /// <summary>
+        /// 构建内部使用的详细异常对象。
+        /// </summary>
+        public static AppErrorInfo BuildErrorInfo(Exception exception, string traceId = null)
+        {
+            return BuildErrorInfo(exception, traceId, 0);
+        }
+
+        /// <summary>
+        /// 构建返回给客户端的精简异常对象。
+        /// </summary>
+        public static AppErrorResponse BuildPublicError(AppErrorInfo error)
+        {
+            if (error == null) return null;
+
+            return new AppErrorResponse
+            {
+                Code = string.IsNullOrWhiteSpace(error.Code) ? Settings.DefaultErrorCode : error.Code,
+                Message = error.Message
+            };
+        }
+
+        public static string ResolveErrorMessage(object errorMessage, object errorCode = null, bool? hideErrorCode = null, params object[] args)
+        {
+            var message = ResolveMessageValue(errorMessage, errorCode);
+            var code = NormalizeErrorCode(errorCode);
+            var withCode = hideErrorCode == true || Settings.HideErrorCode == true || string.IsNullOrWhiteSpace(code)
+                ? message
+                : $"[{code}] {message}";
+
+            return args is { Length: > 0 }
+                ? withCode.Format(args)
+                : withCode;
+        }
+
+        public static string NormalizeErrorCode(object errorCode)
+        {
+            return errorCode?.ToString();
+        }
+
+        private static AppErrorInfo BuildErrorInfo(Exception exception, string traceId, int depth)
+        {
+            if (exception == null || depth > 5) return null;
+
+            var friendlyException = exception as AppFriendlyException;
+            var errorCode = NormalizeErrorCode(friendlyException?.ErrorCode);
+            var originErrorCode = NormalizeErrorCode(friendlyException?.OriginErrorCode);
+            var statusCode = friendlyException?.StatusCode ?? StatusCodes.Status500InternalServerError;
+            var validationException = friendlyException?.ValidationException ?? false;
+            var message = friendlyException != null
+                ? ResolveErrorMessage(friendlyException.ErrorMessage, friendlyException.ErrorCode)
+                : ResolveUnhandledExceptionMessage(exception);
+
+            if (string.IsNullOrWhiteSpace(errorCode))
+            {
+                errorCode = Settings.DefaultErrorCode;
+            }
+
+            if (string.IsNullOrWhiteSpace(originErrorCode))
+            {
+                originErrorCode = errorCode;
+            }
+
+            var canExposeInner = friendlyException?.ExposeInnerException ?? (Settings.PropagateInnerException ?? true);
+
+            return new AppErrorInfo
+            {
+                Code = errorCode,
+                OriginCode = originErrorCode,
+                Message = message,
+                StatusCode = statusCode,
+                ValidationException = validationException,
+                TraceId = traceId,
+                ExceptionType = exception.GetType().FullName,
+                Data = friendlyException?.Data,
+                InnerError = canExposeInner && exception.InnerException != null
+                    ? BuildErrorInfo(exception.InnerException, traceId, depth + 1)
+                    : null
+            };
+        }
+
+        private static string ResolveUnhandledExceptionMessage(Exception exception)
+        {
+            if (exception == null)
+            {
+                return ResolveMessageValue(Settings.DefaultErrorMessage, Settings.DefaultErrorCode);
+            }
+
+            var rawMessage = exception.InnerException?.Message ?? exception.Message;
+            return ResolveMessageValue(rawMessage, Settings.DefaultErrorCode);
+        }
+
+        private static string ResolveMessageValue(object errorMessage, object errorCode)
+        {
+            var message = errorMessage?.ToString();
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                return Localize(message);
+            }
+
+            var code = NormalizeErrorCode(errorCode);
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                if (Settings.ErrorCodeMessages != null && Settings.ErrorCodeMessages.TryGetValue(code, out var configuredMessage) && !string.IsNullOrWhiteSpace(configuredMessage))
+                {
+                    return Localize(configuredMessage);
+                }
+
+                var localizedCodeMessage = Localize(code, allowIdentity: false);
+                if (!string.IsNullOrWhiteSpace(localizedCodeMessage))
+                {
+                    return localizedCodeMessage;
+                }
+            }
+
+            var defaultMessage = Settings.DefaultErrorMessage;
+            if (!string.IsNullOrWhiteSpace(defaultMessage))
+            {
+                return Localize(defaultMessage);
+            }
+
+            return !string.IsNullOrWhiteSpace(code) ? code : "服务异常";
+        }
+
+        private static string Localize(string value, bool allowIdentity = true)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return value;
+            }
+
+            var localizer = L.Text;
+            if (localizer == null)
+            {
+                return value;
+            }
+
+            var localized = localizer[value];
+            if (localized.ResourceNotFound && !allowIdentity)
+            {
+                return null;
+            }
+
+            return localized.Value;
+        }
+
+        private static FriendlyExceptionSettingsOptions Settings =>
+            AppHelper.RootServices.GetService<IOptions<FriendlyExceptionSettingsOptions>>()?.Value
+            ?? new FriendlyExceptionSettingsOptions();
     }
 }

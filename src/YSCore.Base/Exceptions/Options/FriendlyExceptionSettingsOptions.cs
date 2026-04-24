@@ -20,10 +20,20 @@ namespace YSCore.Base.Exceptions.Options
         public string DefaultErrorMessage { get; set; }
 
         /// <summary>
+        /// 错误码消息映射
+        /// </summary>
+        public Dictionary<string, string> ErrorCodeMessages { get; set; }
+
+        /// <summary>
         /// 标记 Oops.Oh 为业务异常
         /// </summary>
         /// <remarks>也就是不会进入异常处理</remarks>
         public bool? ThrowBah { get; set; }
+
+        /// <summary>
+        /// 是否向外透传内部异常
+        /// </summary>
+        public bool? PropagateInnerException { get; set; }
 
         /// <summary>
         /// 是否输出异常日志
@@ -39,8 +49,10 @@ namespace YSCore.Base.Exceptions.Options
         {
             options.HideErrorCode ??= false;
             options.DefaultErrorCode ??= string.Empty;
-            //options.DefaultErrorMessage ??= "Internal Server Error";
+            options.DefaultErrorMessage ??= "服务异常";
+            options.ErrorCodeMessages ??= new Dictionary<string, string>();
             options.ThrowBah ??= false;
+            options.PropagateInnerException ??= true;
             options.LogError ??= true;
         }
     }

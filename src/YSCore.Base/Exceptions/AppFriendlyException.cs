@@ -1,30 +1,32 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YSCore.Base.Exceptions
 {
     /// <summary>
-    /// 友好异常
+    /// 友好异常类型。
     /// </summary>
     public class AppFriendlyException : Exception
     {
         /// <summary>
-        /// 构造函数
+        /// 创建友好异常。
         /// </summary>
-        public AppFriendlyException() : base()
+        public AppFriendlyException()
         {
         }
 
         /// <summary>
-        /// 构造函数
+        /// 创建带错误消息的友好异常。
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="errorCode"></param>
+        public AppFriendlyException(string message) : base(message)
+        {
+            ErrorMessage = message;
+        }
+
+        /// <summary>
+        /// 创建带错误消息和错误码的友好异常。
+        /// </summary>
         public AppFriendlyException(string message, object errorCode) : base(message)
         {
             ErrorMessage = message;
@@ -32,11 +34,16 @@ namespace YSCore.Base.Exceptions
         }
 
         /// <summary>
-        /// 构造函数
+        /// 创建带错误消息和内部异常的友好异常。
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="errorCode"></param>
-        /// <param name="innerException"></param>
+        public AppFriendlyException(string message, Exception innerException) : base(message, innerException)
+        {
+            ErrorMessage = message;
+        }
+
+        /// <summary>
+        /// 创建带错误消息、错误码和内部异常的友好异常。
+        /// </summary>
         public AppFriendlyException(string message, object errorCode, Exception innerException) : base(message, innerException)
         {
             ErrorMessage = message;
@@ -44,41 +51,44 @@ namespace YSCore.Base.Exceptions
         }
 
         /// <summary>
-        /// 构造函数
+        /// 序列化构造函数。
         /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
         public AppFriendlyException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 
         /// <summary>
-        /// 错误码
+        /// 错误码。
         /// </summary>
         public object ErrorCode { get; set; }
 
         /// <summary>
-        /// 错误码（没被复写过的 ErrorCode ）
+        /// 覆盖前的原始错误码。
         /// </summary>
         public object OriginErrorCode { get; set; }
 
         /// <summary>
-        /// 错误消息（支持 Object 对象）
+        /// 错误消息。
         /// </summary>
         public object ErrorMessage { get; set; }
 
         /// <summary>
-        /// 状态码
+        /// 请求状态码。
         /// </summary>
         public int StatusCode { get; set; } = StatusCodes.Status500InternalServerError;
 
         /// <summary>
-        /// 是否是数据验证异常
+        /// 内部异常是否允许对外暴露。
         /// </summary>
-        public bool ValidationException { get; set; } = false;
+        public bool ExposeInnerException { get; set; } = true;
 
         /// <summary>
-        /// 额外数据
+        /// 是否为校验异常。
+        /// </summary>
+        public bool ValidationException { get; set; }
+
+        /// <summary>
+        /// 额外携带的数据。
         /// </summary>
         public new object Data { get; set; }
     }

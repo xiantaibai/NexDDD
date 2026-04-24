@@ -1,0 +1,20 @@
+@host = http://localhost:5081
+
+### success
+GET {{host}}/api/ExceptionDemo/success
+
+### business
+GET {{host}}/api/ExceptionDemo/business
+
+### validation
+GET {{host}}/api/ExceptionDemo/validation
+
+### internal public
+GET {{host}}/api/ExceptionDemo/internal-public
+
+### internal private
+GET {{host}}/api/ExceptionDemo/internal-private
+
+### business en-US
+GET {{host}}/api/ExceptionDemo/business
+Accept-Language: en-US

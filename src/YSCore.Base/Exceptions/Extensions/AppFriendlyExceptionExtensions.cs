@@ -30,5 +30,30 @@ namespace YSCore.Base.Exceptions.Extensions
             exception.Data = data;
             return exception;
         }
+
+        /// <summary>
+        /// 设置错误码
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="errorCode"></param>
+        /// <returns></returns>
+        public static AppFriendlyException WithErrorCode(this AppFriendlyException exception, object errorCode)
+        {
+            exception.ErrorCode = errorCode;
+            exception.OriginErrorCode ??= errorCode;
+            return exception;
+        }
+
+        /// <summary>
+        /// 设置内部异常是否对外透传
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="exposeInnerException"></param>
+        /// <returns></returns>
+        public static AppFriendlyException WithExposeInnerException(this AppFriendlyException exception, bool exposeInnerException = true)
+        {
+            exception.ExposeInnerException = exposeInnerException;
+            return exception;
+        }
     }
 }

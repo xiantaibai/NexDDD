@@ -21,7 +21,7 @@ namespace YSCore.Base.UnifyResult.Providers
         /// <returns></returns>
         public IActionResult OnAuthorizeException(DefaultHttpContext context, ExceptionMetadata metadata)
         {
-            return new JsonResult(RESTfulResult(metadata.StatusCode, data: metadata.Data, errors: metadata.Errors)
+            return new JsonResult(RESTfulResult(metadata.StatusCode, data: metadata.Data, errors: metadata.PublicError ?? metadata.Errors, traceId: metadata.TraceId ?? context.TraceIdentifier)
                 , UnifyContext.GetSerializerSettings(context));
         }
 
@@ -33,7 +33,7 @@ namespace YSCore.Base.UnifyResult.Providers
         /// <returns></returns>
         public IActionResult OnException(ExceptionContext context, ExceptionMetadata metadata)
         {
-            return new JsonResult(RESTfulResult(metadata.StatusCode, data: metadata.Data, errors: metadata.Errors)
+            return new JsonResult(RESTfulResult(metadata.StatusCode, data: metadata.Data, errors: metadata.PublicError ?? metadata.Errors, traceId: metadata.TraceId ?? context.HttpContext.TraceIdentifier)
                 , UnifyContext.GetSerializerSettings(context));
         }
 
@@ -61,19 +61,19 @@ namespace YSCore.Base.UnifyResult.Providers
 
         public IActionResult OnSucceeded(ActionExecutedContext context, object data)
         {
-            return new JsonResult(RESTfulResult(StatusCodes.Status200OK, true, data)
+            return new JsonResult(RESTfulResult(StatusCodes.Status200OK, true, data, traceId: context.HttpContext.TraceIdentifier)
            , UnifyContext.GetSerializerSettings(context));
         }
 
         public IActionResult OnValidateFailed(ActionExecutingContext context, ValidationMetadata metadata)
         {
-            return new JsonResult(RESTfulResult(metadata.StatusCode ?? StatusCodes.Status400BadRequest, data: metadata.Data, errors: metadata.ValidationResult)
+            return new JsonResult(RESTfulResult(metadata.StatusCode ?? StatusCodes.Status400BadRequest, data: metadata.Data, errors: metadata.ValidationResult, traceId: context.HttpContext.TraceIdentifier)
            , UnifyContext.GetSerializerSettings(context));
         }
 
         public IActionResult OnValidateFailed(ExceptionContext context, ValidationMetadata metadata)
         {
-            return new JsonResult(RESTfulResult(metadata.StatusCode ?? StatusCodes.Status400BadRequest, data: metadata.Data, errors: metadata.ValidationResult)
+            return new JsonResult(RESTfulResult(metadata.StatusCode ?? StatusCodes.Status400BadRequest, data: metadata.Data, errors: metadata.ValidationResult, traceId: context.HttpContext.TraceIdentifier)
            , UnifyContext.GetSerializerSettings(context));
         }
 
@@ -85,7 +85,7 @@ namespace YSCore.Base.UnifyResult.Providers
         /// <param name="data"></param>
         /// <param name="errors"></param>
         /// <returns></returns>
-        public static AppRESTfulResult<object> RESTfulResult(int statusCode, bool succeeded = default, object data = default, object errors = default)
+        public static AppRESTfulResult<object> RESTfulResult(int statusCode, bool succeeded = default, object data = default, object errors = default, string traceId = default)
         {
             return new AppRESTfulResult<object>
             {
@@ -94,9 +94,11 @@ namespace YSCore.Base.UnifyResult.Providers
                 Data = data,
                 Errors = errors,
                 Extras = UnifyContext.Take(),
-                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                TraceId = traceId
             };
         }
     }
 
 }
+

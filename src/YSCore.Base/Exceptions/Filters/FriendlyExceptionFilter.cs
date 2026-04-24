@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,6 +12,7 @@ using YSCore.Base.UnifyResult.Options;
 using YSCore.Base.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using YSCore.Base.DataValidation.Filters;
 
 namespace YSCore.Base.Exceptions.Filters
 {
@@ -27,15 +28,18 @@ namespace YSCore.Base.Exceptions.Filters
         /// <returns></returns>
         public async Task OnExceptionAsync(ExceptionContext context)
         {
+            // 解析异常信息
+            var exceptionMetadata = UnifyContext.GetExceptionMetadata(context);
+
             // 判断是否是验证异常
-            var isValidationException = context.Exception is AppFriendlyException friendlyException && friendlyException.ValidationException;
+            var isValidationException = exceptionMetadata.Error?.ValidationException == true;
 
             // 只有不是验证异常才处理
             if (!isValidationException)
             {
                 // 解析异常处理服务，实现自定义异常额外操作，如记录日志等
-                var globalExceptionHandler = context.HttpContext.RequestServices.GetService<IGlobalExceptionHandler>();
-                if (globalExceptionHandler != null)
+                var globalExceptionHandlers = context.HttpContext.RequestServices.GetServices<IGlobalExceptionHandler>();
+                foreach (var globalExceptionHandler in globalExceptionHandlers)
                 {
                     await globalExceptionHandler.OnExceptionAsync(context);
                 }
@@ -46,9 +50,6 @@ namespace YSCore.Base.Exceptions.Filters
 
             // 如果异常在其他地方被标记了处理，那么这里不再处理
             if (context.ExceptionHandled) return;
-
-            // 解析异常信息
-            var exceptionMetadata = UnifyContext.GetExceptionMetadata(context);
 
             // 判断是否是 Razor Pages
             var isPageDescriptor = context.ActionDescriptor is CompiledPageActionDescriptor;
@@ -64,7 +65,7 @@ namespace YSCore.Base.Exceptions.Filters
             {
                 // WebAPI 情况
                 // 返回 JsonResult
-                context.Result = new JsonResult(exceptionMetadata.Errors)
+                context.Result = new JsonResult(exceptionMetadata.PublicError ?? exceptionMetadata.Errors)
                 {
                     StatusCode = exceptionMetadata.StatusCode,
                 };
@@ -78,7 +79,7 @@ namespace YSCore.Base.Exceptions.Filters
                 // 判断是否是验证异常，如果是，则不处理
                 if (isValidationException)
                 {
-                    var resultHttpContext = context.HttpContext.Items[nameof(ValidationMetadata) + nameof(AppFriendlyException)];
+                    var resultHttpContext = context.HttpContext.Items[nameof(DataValidationFilter) + nameof(AppFriendlyException)];
                     // 读取验证执行结果
                     if (resultHttpContext != null)
                     {
@@ -111,8 +112,14 @@ namespace YSCore.Base.Exceptions.Filters
                 var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<AppFriendlyException>>();
 
                 // 记录拦截日常
-                logger.LogError(context.Exception, context.Exception.Message);
+                logger.LogError(context.Exception,
+                    "Unhandled exception. traceId:{TraceId}, code:{ErrorCode}, statusCode:{StatusCode}, path:{Path}",
+                    exceptionMetadata.TraceId,
+                    exceptionMetadata.Error?.Code ?? exceptionMetadata.ErrorCode,
+                    exceptionMetadata.StatusCode,
+                    context.HttpContext.Request.Path);
             }
         }
     }
 }
+
