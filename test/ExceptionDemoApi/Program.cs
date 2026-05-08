@@ -1,8 +1,10 @@
 using ExceptionDemoApi;
 using Microsoft.Extensions.Options;
 using YSCore.Base.App.Extensions;
+using YSCore.Base.Exceptions.Handlers;
 using YSCore.Base.Localization.Extensions;
 using YSCore.Base.UnifyResult.Extensions;
+using YSCore.Base.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args)
     .InitYsCore();
@@ -14,12 +16,12 @@ builder.Services.AddAppLocalization();
 
 builder.Services.AddYsCore(options =>
 {
-    options.ConfigureFriendlyException(opt =>
-    {
-        opt.GlobalEnabled = false;
-    });
+    //options.ConfigureFriendlyException(opt =>
+    //{
+    //    opt.GlobalEnabled = false;
+    //});
 });
-//builder.Services.AddSingleton<DemoGlobalExceptionHandler>();
+//builder.Services.AddInnerDependencyInjection(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
