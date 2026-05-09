@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Options;
+using YSCore.Base.Context;
 using YSCore.Base.Events;
 
 namespace YSCore.Base.Idempotency;
@@ -12,6 +13,7 @@ namespace YSCore.Base.Idempotency;
 public sealed class IdempotentBehavior<TRequest, TResponse>(
     IEnumerable<IIdempotentCommand<TRequest>> idempotentCommands,
     IIdempotencyStore idempotencyStore,
+    IContextAccessor<IdempotencyExecutionContext> idempotencyContextAccessor,
     IOptions<IdempotencyOptions> options)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IBaseCommand
@@ -48,9 +50,15 @@ public sealed class IdempotentBehavior<TRequest, TResponse>(
 
         try
         {
-            var response = await next();
 
-            await idempotencyStore.MarkCompletedAsync(record.TypeCode, record.KeyHash, beginResult.RequestId, cancellationToken);
+            idempotencyContextAccessor.SetContext(new IdempotencyExecutionContext
+            {
+                TypeCode = record.TypeCode,
+                KeyHash = record.KeyHash,
+                RequestId = beginResult.RequestId
+            });
+
+            var response = await next();
 
             return response;
         }

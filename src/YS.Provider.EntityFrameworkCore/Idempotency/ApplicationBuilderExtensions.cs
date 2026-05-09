@@ -42,6 +42,7 @@ public static class ApplicationBuilderExtensions
     {
         services.AddIdempotency(configure);
         services.AddIdempotentCommands(assemblies);
+        services.AddIdempotencyExecutionContex();
         services.AddDbIdempotencyStore<TDbContext>();
         return services;
     }

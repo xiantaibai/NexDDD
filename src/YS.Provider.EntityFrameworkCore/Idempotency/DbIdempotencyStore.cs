@@ -14,12 +14,21 @@ namespace YSCore.Provider.EntityFrameworkCore.Idempotency;
 public sealed class DbIdempotencyStore<TDbContext> : IIdempotencyStore
     where TDbContext : DbContext
 {
+    /// <summary>
+    /// 当前事务 DbContext
+    /// </summary>
+    private readonly TDbContext _dbContext;
+
+    /// <summary>
+    /// 独立事务
+    /// </summary>
     private readonly IServiceScopeFactory _scopeFactory;
 
     public DbIdempotencyStore(
-        IServiceScopeFactory scopeFactory)
+        IServiceScopeFactory scopeFactory, TDbContext dbContext)
     {
         _scopeFactory = scopeFactory;
+        _dbContext = dbContext;
     }
 
     public async Task<IdempotencyBeginResult> TryBeginAsync(IdempotencyRecord record, CancellationToken cancellationToken = default)
@@ -108,13 +117,13 @@ public sealed class DbIdempotencyStore<TDbContext> : IIdempotencyStore
 
     public async Task MarkCompletedAsync(string typeCode, string keyHash, string requestId, CancellationToken cancellationToken = default)
     {
-        using var scope = _scopeFactory.CreateScope();
+        //using var scope = _scopeFactory.CreateScope();
 
-        var dbContext =
-            scope.ServiceProvider
-                .GetRequiredService<TDbContext>();
+        //var dbContext =
+        //    scope.ServiceProvider
+        //        .GetRequiredService<TDbContext>();
 
-        await dbContext.Set<IdempotencyRecordEntity>()
+        await _dbContext.Set<IdempotencyRecordEntity>()
            .Where(x =>
                x.TypeCode == typeCode
                && x.KeyHash == keyHash

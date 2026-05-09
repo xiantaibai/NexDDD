@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using YSCore.Base.Context;
 
 namespace YSCore.Base.Idempotency;
 
@@ -64,6 +65,23 @@ public static class ServiceCollectionExtensions
                 }
             }
         }
+
+        return services;
+    }
+
+    /// <summary>
+    /// 注入幂等执行上下文。
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddIdempotencyExecutionContex(this IServiceCollection services)
+    {
+        services.AddContext<IdempotencyExecutionContext>(
+         options =>
+         {
+             options.ContextFactory =
+                 new IdempotencyExecutionContextFactory();
+         });
 
         return services;
     }
