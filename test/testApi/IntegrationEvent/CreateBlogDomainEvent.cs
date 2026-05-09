@@ -23,13 +23,13 @@ public class CreateBlogDomainIntegrationEventHandler(ILogger<CreateBlogDomainInt
     }
 }
 
-public class InventoryChangedIntegrationEventHandler(ILogger<InventoryChangedIntegrationEventHandler> logger) : IIntegrationEventHandler<InventoryChangedIntegrationEvent>
-{
-    public async Task HandleAsync(IntegrationEventHandlerContext eventData, CancellationToken cancellationToken = default)
-    {
-        var data = (InventoryChangedIntegrationEvent)eventData.Source;
-        var header = eventData.Properties;
+//public class InventoryChangedIntegrationEventHandler(ILogger<InventoryChangedIntegrationEventHandler> logger) : IIntegrationEventHandler<InventoryChangedIntegrationEvent>
+//{
+//    public async Task HandleAsync(IntegrationEventHandlerContext eventData, CancellationToken cancellationToken = default)
+//    {
+//        var data = (InventoryChangedIntegrationEvent)eventData.Source;
+//        var header = eventData.Properties;
 
-        logger.LogInformation("接受 消息队列数据,库存变更:{data}", data);
-    }
-}
+//        logger.LogInformation("接受 消息队列数据,库存变更:{data}", data);
+//    }
+//}

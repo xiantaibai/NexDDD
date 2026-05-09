@@ -31,6 +31,8 @@ using YSCore.Base.CommandLocks;
 using Microsoft.EntityFrameworkCore.Migrations;
 using YSCore.Base.DistributedLocks;
 using testApi.Extensions;
+using YSCore.Base.Idempotency;
+using YSCore.Provider.EntityFrameworkCore.Idempotency;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,20 +57,16 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
 
     cfg.AddCommandLockBehavior()
-    .AddOpenBehavior(typeof(NewCommandUnitOfWorkBehavior<,>));
-    //cfg.AddUnitOfWorkBehaviors();
-    //cfg.AddDataValidationBehavior()
-    //.AddUnitOfWorkBehaviors();
+    .AddIdempotentBehavior()
+    .AddUnitOfWorkBehaviors();
+    // .AddOpenBehavior(typeof(NewCommandUnitOfWorkBehavior<,>));
 });
-builder.Services.AddCommandLocks(typeof(Program).Assembly); //注册所有的命令锁类型
+builder.Services.AddCommandLocks(typeof(Program).Assembly);
+
 // 配置连接字符串
 var constr = "server=114.55.176.40;port=3307;database=ShardingTest;user=api;password=Aa!@#4567899;CharSet=utf8;sslmode=none;AllowLoadLocalInfile=true";
 
 builder.Services.AddShardingDbContext<TestDbContext>()
-    //.UseRouteConfig(op =>
-    //{
-    //    op.AddShardingTableRoute<BlogTableRoute2>();
-    //})
     .UseConfig(op =>
     {
         op.ThrowIfQueryRouteNotMatch = false;
@@ -103,30 +101,38 @@ builder.Services.AddShardingDbContext<TestDbContext>()
      .ReplaceService<ITableEnsureManager, CusMySqlTableEnsureManager>()
      .ReplaceService<IDbContextCreator, CustomerDbContextCreator>(ServiceLifetime.Singleton)
     .AddShardingCore();
-// 替换
+
 builder.Services.Replace(
                 ServiceDescriptor.Singleton<IDbContextCreator, CustomerDbContextCreator>());
 
-// 事务
+// 
 builder.Services.AddUnitOfWork<TestDbContext>();
 
-// 事务锁
+// 
 builder.Services.AddInMemoryDistributedLock();
+
+builder.Services.AddDbIdempotency<TestDbContext>(
+    new[] { typeof(Program).Assembly },
+    options =>
+    {
+        options.DefaultExpire = TimeSpan.FromDays(1);
+        options.CleanupInterval = TimeSpan.FromMinutes(5);
+        options.CleanupBatchSize = 200;
+    });
 
 builder.Services.AddIntegrationEvent();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// 非必须  启动检查缺少的表并且创建
+// 
 app.Services.UseAutoTryCompensateTable();
-
+await app.Services.InitializeIdempotencyTableAsync<TestDbContext>();
 
 var summaries = new[]
 {
@@ -148,9 +154,9 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
-app.MapPost("/blog", ([FromServices] IMediator mediator, [FromBody] CreateBlogCommand command) =>
+app.MapPost("/blog", async ([FromServices] IMediator mediator, [FromBody] CreateBlogCommand command) =>
 {
-    mediator.Send(command);
+   await mediator.Send(command);
 })
 .WithName("CreateBlog")
 .WithOpenApi();
@@ -171,28 +177,12 @@ app.MapPost("/blog2", async ([FromServices] TestDbContext dbcontext, [FromBody] 
 .WithName("CreateBlog2")
 .WithOpenApi();
 
-
-//using (var serviceScope = app.Services.CreateScope())
-//{
-//    var defaultDbContext = serviceScope.ServiceProvider.GetService<TestDbContext>();
-
-//    using (var tran = await defaultDbContext.Database.BeginTransactionAsync())
-//    {
-//        var name = Guid.NewGuid().ToString("n");
-//        var code = "xxx1";
-//        var blog = new Blog(name, code);
-
-//        await defaultDbContext.AddAsync(blog);
-//        await defaultDbContext.SaveChangesAsync();
-
-//        await tran.CommitAsync();
-//    }
-//}
-
 app.Run();
 
 internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
+
+
 

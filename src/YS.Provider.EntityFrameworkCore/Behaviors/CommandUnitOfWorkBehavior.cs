@@ -1,14 +1,8 @@
-using MediatR;
+﻿using MediatR;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YSCore.Base.Diagnostics;
 using YSCore.Base.Events;
-using YSCore.Base.Idempotency;
 
 namespace YSCore.Provider.EntityFrameworkCore.Behaviors
 {
@@ -27,13 +21,13 @@ namespace YSCore.Provider.EntityFrameworkCore.Behaviors
             _unitOfWork = unitOfWork;
         }
 
-
         public async Task<TResponse> Handle(TCommand request, RequestHandlerDelegate<TResponse> next,
             CancellationToken cancellationToken)
         {
             var cmdType = typeof(TCommand);
             var commandName = cmdType.FullName ?? cmdType.Name;
-            Guid id = Guid.NewGuid();
+            var id = Guid.NewGuid();
+
             if (_unitOfWork.CurrentTransaction != null)
             {
                 try
@@ -47,19 +41,9 @@ namespace YSCore.Provider.EntityFrameworkCore.Behaviors
                 catch (Exception e)
                 {
                     WriteCommandError(new CommandError(id, commandName, request, e));
-
-                    // ⭐ 幂等处理
-                    if (request is IIdempotentPolicy<TResponse> policy
-                        && policy.IsIdempotent
-                        && policy.Match(e))
-                    {
-                        return policy.OnDuplicate();
-                    }
-
                     throw;
                 }
             }
-
 
             await using var transaction = _unitOfWork.BeginTransaction();
             try
@@ -74,20 +58,10 @@ namespace YSCore.Provider.EntityFrameworkCore.Behaviors
             catch (Exception e)
             {
                 WriteCommandError(new CommandError(id, commandName, request, e));
-                // ⭐ 幂等处理
-                if (request is IIdempotentPolicy<TResponse> policy
-                    && policy.IsIdempotent
-                    && policy.Match(e))
-                {
-                    await _unitOfWork.RollbackAsync(cancellationToken); // 仍需回滚
-                    return policy.OnDuplicate();
-                }
-
                 await _unitOfWork.RollbackAsync(cancellationToken);
                 throw;
             }
         }
-
 
         void WriteCommandBegin(CommandBegin data)
         {

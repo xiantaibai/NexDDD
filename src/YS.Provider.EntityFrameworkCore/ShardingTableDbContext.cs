@@ -12,6 +12,7 @@ using YSCore.Base.Diagnostics;
 using YSCore.Provider.EntityFrameworkCore.Extensions;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
+using YSCore.Provider.EntityFrameworkCore.Idempotency;
 
 namespace YSCore.Provider.EntityFrameworkCore
 {
@@ -42,6 +43,7 @@ namespace YSCore.Provider.EntityFrameworkCore
         {
             // IsDelete 过滤器
             modelBuilder.AddQueryFilter<IDeletedFilter>(x => x.IsDelete == false);
+            modelBuilder.AddIdempotencyModel();
         }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

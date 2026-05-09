@@ -16,6 +16,7 @@ using System.Linq.Expressions;
 using YSCore.Base.DatabaseAccessor.Filter;
 using Microsoft.VisualBasic;
 using YSCore.Provider.EntityFrameworkCore.Extensions;
+using YSCore.Provider.EntityFrameworkCore.Idempotency;
 
 namespace YSCore.Provider.EntityFrameworkCore
 {
@@ -49,6 +50,7 @@ namespace YSCore.Provider.EntityFrameworkCore
         {
             // IsDelete 过滤器
             modelBuilder.AddQueryFilter<IDeletedFilter>(x => x.IsDelete == false);
+            modelBuilder.AddIdempotencyModel();
         }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

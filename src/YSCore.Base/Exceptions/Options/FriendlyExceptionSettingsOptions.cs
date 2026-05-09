@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using YSCore.Base.Idempotency;
 
 namespace YSCore.Base.Exceptions.Options
 {
@@ -51,6 +52,8 @@ namespace YSCore.Base.Exceptions.Options
             options.DefaultErrorCode ??= string.Empty;
             options.DefaultErrorMessage ??= "服务异常";
             options.ErrorCodeMessages ??= new Dictionary<string, string>();
+            options.ErrorCodeMessages.TryAdd(IdempotencyErrorCodes.RepeatSubmit, "请勿重复提交相同请求。");
+            options.ErrorCodeMessages.TryAdd(IdempotencyErrorCodes.CommandLocked, "当前请求正在处理中，请稍后再试。");
             options.ThrowBah ??= false;
             options.PropagateInnerException ??= true;
             options.LogError ??= true;

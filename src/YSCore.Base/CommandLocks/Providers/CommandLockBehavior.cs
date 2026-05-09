@@ -23,7 +23,7 @@ public class CommandLockBehavior<TRequest, TResponse>(
 
         if (count > 1)
         {
-            throw new InvalidOperationException("Only one ICommandLock<TRequest> is allowed");
+            throw new InvalidOperationException("同一个命令只允许注册一个 ICommandLock<TRequest>。");
         }
 
         var commandLock = commandLocks.First();
@@ -37,7 +37,7 @@ public class CommandLockBehavior<TRequest, TResponse>(
                         cancellationToken: cancellationToken);
                 if (lockHandler == null)
                 {
-                    throw new CommandLockFailedException("Acquire Lock Failed", options.LockKey);
+                    throw new CommandLockFailedException("当前请求正在处理中，请稍后再试。", options.LockKey);
                 }
 
                 _lockedKeys.LockedKeys.Keys.Add(options.LockKey);
@@ -73,7 +73,7 @@ public class CommandLockBehavior<TRequest, TResponse>(
                     cancellationToken: cancellationToken);
             if (lockHandler == null)
             {
-                throw new CommandLockFailedException("Acquire Lock Failed", key);
+                throw new CommandLockFailedException("当前请求正在处理中，请稍后再试。", key);
             }
 
             _lockedKeys.LockedKeys.Keys.Add(key);
