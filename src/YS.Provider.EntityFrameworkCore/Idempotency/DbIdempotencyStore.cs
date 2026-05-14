@@ -169,6 +169,24 @@ public sealed class DbIdempotencyStore<TDbContext> : IIdempotencyStore
             .ExecuteDeleteAsync(cancellationToken);
     }
 
+    public async Task<int> DeleteCompletedAsync(int batchSize, CancellationToken cancellationToken = default)
+    {
+        var now = DateTime.UtcNow;
+        var size = batchSize <= 0 ? 500 : batchSize;
+
+        using var scope = _scopeFactory.CreateScope();
+
+        var dbContext =
+            scope.ServiceProvider
+                .GetRequiredService<TDbContext>();
+
+        return await dbContext.Set<IdempotencyRecordEntity>()
+            .Where(x => x.ExpireTime <= now && x.Status == IdempotencyStatus.Completed)
+            .OrderBy(x => x.ExpireTime)
+            .Take(size)
+            .ExecuteDeleteAsync(cancellationToken);
+    }
+
     /// <summary>
     /// 判断是否重复
     /// </summary>

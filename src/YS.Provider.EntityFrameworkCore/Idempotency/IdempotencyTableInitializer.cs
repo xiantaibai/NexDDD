@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS `ys_idempotency_records` (
   `LastModifyTime` datetime(6) NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `UX_ys_idempotency_records_TypeCode_KeyHash` (`TypeCode`, `KeyHash`),
-  KEY `IX_ys_idempotency_records_ExpireTime` (`ExpireTime`)
+  KEY `IX_ys_idempotency_records_ExpireTime` (`ExpireTime`),
+  KEY `IX_ys_idempotency_records_Status_ExpireTime` (`Status`, `ExpireTime`)
 );
 """;
         }
@@ -54,11 +55,12 @@ BEGIN
         [CreateTime] datetime2 NOT NULL,
         [ExpireTime] datetime2 NOT NULL,
         [Status] int NOT NULL,
-        [LastModifyTime] datetime(6) NULL,
+        [LastModifyTime] datetime2 NULL,
         CONSTRAINT [PK_ys_idempotency_records] PRIMARY KEY ([Id])
     );
     CREATE UNIQUE INDEX [UX_ys_idempotency_records_TypeCode_KeyHash] ON [dbo].[ys_idempotency_records]([TypeCode], [KeyHash]);
     CREATE INDEX [IX_ys_idempotency_records_ExpireTime] ON [dbo].[ys_idempotency_records]([ExpireTime]);
+    CREATE INDEX [IX_ys_idempotency_records_Status_ExpireTime] ON [dbo].[ys_idempotency_records]([Status], [ExpireTime]);
 END
 """;
         }
@@ -72,14 +74,15 @@ CREATE TABLE IF NOT EXISTS ys_idempotency_records (
   "TypeCode" varchar(128) NOT NULL,
   "Key" varchar(512) NOT NULL,
   "KeyHash" varchar(128) NOT NULL,
-  `RequestId` varchar(64) NOT NULL,
+  "RequestId" varchar(64) NOT NULL,
   "CreateTime" timestamp without time zone NOT NULL,
   "ExpireTime" timestamp without time zone NOT NULL,
-  `LastModifyTime` datetime(6) NULL,
+  "LastModifyTime" timestamp without time zone NULL,
   "Status" integer NOT NULL
 );
 CREATE UNIQUE INDEX IF NOT EXISTS "UX_ys_idempotency_records_TypeCode_KeyHash" ON ys_idempotency_records ("TypeCode", "KeyHash");
 CREATE INDEX IF NOT EXISTS "IX_ys_idempotency_records_ExpireTime" ON ys_idempotency_records ("ExpireTime");
+CREATE INDEX IF NOT EXISTS "IX_ys_idempotency_records_Status_ExpireTime" ON ys_idempotency_records ("Status", "ExpireTime");
 """;
         }
 

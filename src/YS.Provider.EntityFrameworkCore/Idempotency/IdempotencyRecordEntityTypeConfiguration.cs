@@ -39,5 +39,7 @@ internal sealed class IdempotencyRecordEntityTypeConfiguration : IEntityTypeConf
             .IsUnique();
 
         builder.HasIndex(x => x.ExpireTime);
+
+        builder.HasIndex(x => new { x.Status, x.ExpireTime });
     }
 }

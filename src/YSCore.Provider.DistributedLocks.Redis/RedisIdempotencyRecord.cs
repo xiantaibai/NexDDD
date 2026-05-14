@@ -1,3 +1,5 @@
+using YSCore.Base.Idempotency;
+
 namespace YSCore.Provider.DistributedLocks.Redis;
 
 /// <summary>

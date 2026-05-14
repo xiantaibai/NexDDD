@@ -248,4 +248,9 @@ public sealed class RedisIdempotencyStore(
     {
         return Task.FromResult(0);
     }
+
+    public Task<int> DeleteCompletedAsync(int batchSize, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(0);
+    }
 }

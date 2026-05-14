@@ -38,4 +38,12 @@ public interface IIdempotencyStore
     /// <param name="cancellationToken">取消令牌。</param>
     /// <returns></returns>
     Task<int> DeleteExpiredAsync(int batchSize, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// 删除已完成且已过期的幂等记录。
+    /// </summary>
+    /// <param name="batchSize">单次清理数量。</param>
+    /// <param name="cancellationToken">取消令牌。</param>
+    /// <returns></returns>
+    Task<int> DeleteCompletedAsync(int batchSize, CancellationToken cancellationToken = default);
 }

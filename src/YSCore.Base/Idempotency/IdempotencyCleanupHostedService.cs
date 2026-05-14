@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 namespace YSCore.Base.Idempotency;
 
 /// <summary>
-/// 幂等过期记录清理任务。
+/// 幂等记录清理任务。
 /// </summary>
 internal sealed class IdempotencyCleanupHostedService(
     IServiceScopeFactory serviceScopeFactory,
@@ -15,34 +15,72 @@ internal sealed class IdempotencyCleanupHostedService(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var cleanupInterval = options.Value.CleanupInterval;
-        if (cleanupInterval <= TimeSpan.Zero)
+        var expiredCleanupTask = RunExpiredCleanupAsync(stoppingToken);
+        var completedCleanupTask = RunCompletedCleanupAsync(stoppingToken);
+
+        await Task.WhenAll(expiredCleanupTask, completedCleanupTask);
+    }
+
+    private Task RunExpiredCleanupAsync(CancellationToken stoppingToken)
+    {
+        return RunCleanupAsync(
+            options.Value.CleanupInterval,
+            "过期幂等记录清理完成，本次清理 {Count} 条。",
+            "过期幂等记录清理失败。",
+            (store, cancellationToken) => store.DeleteExpiredAsync(options.Value.CleanupBatchSize, cancellationToken),
+            stoppingToken);
+    }
+
+    private Task RunCompletedCleanupAsync(CancellationToken stoppingToken)
+    {
+        return RunCleanupAsync(
+            options.Value.CompletedCleanupInterval,
+            "已完成幂等记录清理完成，本次清理 {Count} 条。",
+            "已完成幂等记录清理失败。",
+            (store, cancellationToken) => store.DeleteCompletedAsync(options.Value.CleanupBatchSize, cancellationToken),
+            stoppingToken);
+    }
+
+    private async Task RunCleanupAsync(
+        TimeSpan interval,
+        string successMessage,
+        string errorMessage,
+        Func<IIdempotencyStore, CancellationToken, Task<int>> cleanupAction,
+        CancellationToken stoppingToken)
+    {
+        if (interval <= TimeSpan.Zero)
         {
             return;
         }
 
-        using var timer = new PeriodicTimer(cleanupInterval);
-        while (!stoppingToken.IsCancellationRequested
-               && await timer.WaitForNextTickAsync(stoppingToken))
+        using var timer = new PeriodicTimer(interval);
+        try
         {
-            try
+            while (!stoppingToken.IsCancellationRequested
+                   && await timer.WaitForNextTickAsync(stoppingToken))
             {
-                using var scope = serviceScopeFactory.CreateScope();
-                var store = scope.ServiceProvider.GetRequiredService<IIdempotencyStore>();
-                var deleted = await store.DeleteExpiredAsync(options.Value.CleanupBatchSize, stoppingToken);
-                if (deleted > 0)
+                try
                 {
-                    logger.LogInformation("幂等记录清理完成，本次清理 {Count} 条。", deleted);
+                    using var scope = serviceScopeFactory.CreateScope();
+                    var store = scope.ServiceProvider.GetRequiredService<IIdempotencyStore>();
+                    var deleted = await cleanupAction(store, stoppingToken);
+                    if (deleted > 0)
+                    {
+                        logger.LogInformation(successMessage, deleted);
+                    }
+                }
+                catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, errorMessage);
                 }
             }
-            catch (OperationCanceledException)
-            {
-                break;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "幂等记录清理失败。");
-            }
+        }
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+        {
         }
     }
 }

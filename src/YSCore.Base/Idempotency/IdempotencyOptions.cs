@@ -1,4 +1,4 @@
-﻿namespace YSCore.Base.Idempotency;
+namespace YSCore.Base.Idempotency;
 
 /// <summary>
 /// 幂等全局配置。
@@ -14,7 +14,7 @@ public sealed class IdempotencyOptions
     /// 默认过期时长。
     /// 数据库存储建议按小时或天配置，Redis 可按分钟配置。
     /// </summary>
-    public TimeSpan DefaultExpire { get; set; } = TimeSpan.FromDays(1);
+    public TimeSpan DefaultExpire { get; set; } = TimeSpan.FromMinutes(1);
 
     /// <summary>
     /// 默认过期秒数。
@@ -39,6 +39,11 @@ public sealed class IdempotencyOptions
     /// 过期数据清理间隔。
     /// </summary>
     public TimeSpan CleanupInterval { get; set; } = TimeSpan.FromMinutes(10);
+
+    /// <summary>
+    /// 已完成数据清理间隔。
+    /// </summary>
+    public TimeSpan CompletedCleanupInterval { get; set; } = TimeSpan.FromDays(7);
 
     /// <summary>
     /// 单次清理批量大小。
