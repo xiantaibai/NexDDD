@@ -115,8 +115,8 @@ builder.Services.AddDbIdempotency<TestDbContext>(
     new[] { typeof(Program).Assembly },
     options =>
     {
-        options.DefaultExpire = TimeSpan.FromDays(1);
-        options.CleanupInterval = TimeSpan.FromMinutes(5);
+        options.DefaultExpire = TimeSpan.FromMinutes(2);
+        options.CleanupInterval = TimeSpan.FromMinutes(1);
         options.CleanupBatchSize = 200;
     });
 
