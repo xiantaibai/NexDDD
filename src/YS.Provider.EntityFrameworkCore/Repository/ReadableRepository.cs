@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -11,9 +11,9 @@ using YSCore.Base.LinqBuilder.Extensions;
 
 namespace YSCore.Provider.EntityFrameworkCore.Repository
 {
-    public class ReadableRepository<TEntity, TDbContext> : IReadableRepository<TEntity>
+    public class ReadableRepository<TEntity, TDbContext> : IQueryRepository<TEntity>
         where TEntity : Entity
-        where TDbContext : DbContext, IUnitOfWork
+        where TDbContext : DbContext
     {
         protected virtual TDbContext DbContext { get; set; }
 
@@ -52,7 +52,7 @@ namespace YSCore.Provider.EntityFrameworkCore.Repository
         /// </summary>
         public virtual IModel Model { get; internal set; }
 
-        protected ReadableRepository(TDbContext context) 
+        public ReadableRepository(TDbContext context) 
         {
             DbContext = context;
 

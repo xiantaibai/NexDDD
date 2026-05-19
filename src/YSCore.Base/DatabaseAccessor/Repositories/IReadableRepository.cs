@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,7 +7,21 @@ using System.Threading.Tasks;
 
 namespace YSCore.Base.DatabaseAccessor.Repositories
 {
+    /// <summary>
+    /// 只读仓储接口，可面向任意实体。
+    /// </summary>
+    /// <typeparam name="TEntity">实体类型</typeparam>
     public interface IReadableRepository<TEntity>: IPrivateReadableRepository<TEntity>
+        where TEntity : notnull, Entity
+    {
+    }
+
+    /// <summary>
+    /// 查询仓储接口，可面向任意实体。
+    /// 用于表达应用层查询模型，不要求实体必须是聚合根。
+    /// </summary>
+    /// <typeparam name="TEntity">实体类型</typeparam>
+    public interface IQueryRepository<TEntity> : IReadableRepository<TEntity>
         where TEntity : notnull, Entity
     {
     }

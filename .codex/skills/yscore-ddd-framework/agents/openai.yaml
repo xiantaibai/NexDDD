@@ -1,0 +1,4 @@
+interface:
+  display_name: "YSCore DDD Framework"
+  short_description: "指导 AI 按 YSCore DDD 架构实现业务功能"
+  default_prompt: "Use $yscore-ddd-framework 按 YSCore DDD 架构实现一个新的业务功能。"
