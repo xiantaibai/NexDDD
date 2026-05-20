@@ -33,6 +33,7 @@ using YSCore.Base.DistributedLocks;
 using testApi.Extensions;
 using YSCore.Base.Idempotency;
 using YSCore.Provider.EntityFrameworkCore.Idempotency;
+using YSCore.Base.DatabaseAccessor.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,6 +109,9 @@ builder.Services.Replace(
 // 
 builder.Services.AddUnitOfWork<TestDbContext>();
 
+// 加载读 仓储
+builder.Services.AddReadableRepositories<TestDbContext>(new[] { typeof(Program).Assembly });
+
 // 
 builder.Services.AddInMemoryDistributedLock();
 
@@ -152,6 +156,14 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast")
+.WithOpenApi();
+
+app.MapGet("/blog", async ([FromServices] IQueryRepository<Blog> queryRepository, [FromQuery] string name) =>
+{
+   var result=await queryRepository.FirstOrDefaultAsync(s => s.Name == name);
+    return result;
+})
+.WithName("GetBlog")
 .WithOpenApi();
 
 app.MapPost("/blog", async ([FromServices] IMediator mediator, [FromBody] CreateBlogCommand command) =>
