@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +20,17 @@ namespace YSCore.Provider.EntityFrameworkCore
         }
 
         public virtual IUnitOfWork UnitOfWork => DbContext;
+
+        /// <summary>
+        /// 写仓储默认用于加载聚合并修改，所以默认启用 EF Core tracking。
+        /// 需要只读查询时，可以显式传入 tracking: false。
+        /// </summary>
+        /// <param name="tracking">是否跟踪实体</param>
+        /// <returns>IQueryable{TEntity}</returns>
+        public override IQueryable<TEntity> AsQueryable(bool? tracking = null)
+        {
+            return base.AsQueryable(tracking ?? true);
+        }
 
         public virtual TEntity Add(TEntity entity) => DbContext.Add(entity).Entity;
 
@@ -105,3 +116,4 @@ namespace YSCore.Provider.EntityFrameworkCore
         }
     }
 }
+
