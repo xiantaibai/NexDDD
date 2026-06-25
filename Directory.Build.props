@@ -1,12 +1,12 @@
 <Project>
 	<PropertyGroup>
-		<VersionPrefix>1.2.7</VersionPrefix>
+		<VersionPrefix>1.2.8</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 	</PropertyGroup>
 	<PropertyGroup>
 		<Authors>YSCore</Authors>
 		<Product>YSCore Framework</Product>
-		<Description>1. 支持幂等指令 2.支持查询Repositories,与写Repositories分开 3. 新增AI skill </Description>
+		<Description>1. IYsRepository 聚合根仓储支持写查询，默认跟踪实体。与读查询分开来 </Description>
 		<owners>YSCore</owners>
 		<PackagePrefix>YSCore</PackagePrefix>
 		<PackageIconUrl></PackageIconUrl>

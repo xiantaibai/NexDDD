@@ -196,6 +196,13 @@ Aggregate Root raises Domain Event
 
 注册 pipeline 时，优先保持项目已有顺序。没有既有约定时，通常按 `Command Lock`、`Idempotency`、`UnitOfWork` 的顺序注册。
 
+`Idempotency` 是可选能力，不是所有 `Command` 的必选依赖：
+
+- 只使用 `Command` + `UnitOfWork` 时，不需要注册幂等服务，也不应该因为缺少幂等上下文报错。
+- 显式启用 `AddIdempotentBehavior()` 时，必须同时注册 `AddIdempotency(...)` 或 `AddDbIdempotency<TDbContext>(...)`，并提供 `IIdempotencyStore`。
+- 只有某个命令存在 `IIdempotentCommand<TCommand>` 配置时，才表示该命令需要幂等保护。
+- `CommandUnitOfWorkBehavior` 可以感知幂等上下文，但不能强制要求业务系统注册幂等上下文。
+
 ## 禁止事项
 
 - 不要把业务规则写在 Controller 或 Minimal API lambda 中。

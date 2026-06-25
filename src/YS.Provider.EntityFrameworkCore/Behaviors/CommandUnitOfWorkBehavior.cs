@@ -24,7 +24,7 @@ namespace YSCore.Provider.EntityFrameworkCore.Behaviors
         public CommandUnitOfWorkBehavior(ITransactionUnitOfWork unitOfWork, IServiceProvider serviceProvider)
         {
             _unitOfWork = unitOfWork;
-            _idempotencyContextAccessor = serviceProvider.GetRequiredService<IContextAccessor<IdempotencyExecutionContext>>();
+            _idempotencyContextAccessor = serviceProvider.GetService<IContextAccessor<IdempotencyExecutionContext>>();
             _idempotencyStore = serviceProvider.GetService<IIdempotencyStore>();
         }
 
@@ -77,7 +77,7 @@ namespace YSCore.Provider.EntityFrameworkCore.Behaviors
         }
 
         /// <summary>
-        /// 尝试提交幂等完成状态
+        ///  尝试提交幂等完成状态
         /// </summary>
         private async Task TryMarkIdempotencyCompletedAsync(
             CancellationToken cancellationToken)

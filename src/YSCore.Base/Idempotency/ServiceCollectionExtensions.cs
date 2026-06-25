@@ -5,7 +5,7 @@ using YSCore.Base.Context;
 namespace YSCore.Base.Idempotency;
 
 /// <summary>
-/// 幂等服务注册扩展。
+/// 幂等服务注册扩展
 /// </summary>
 public static class ServiceCollectionExtensions
 {
@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
             optionsBuilder.Configure(configure);
         }
 
+        services.AddIdempotencyExecutionContext();
         services.AddHostedService<IdempotencyCleanupHostedService>();
         return services;
     }
@@ -74,7 +75,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services"></param>
     /// <returns></returns>
-    public static IServiceCollection AddIdempotencyExecutionContex(this IServiceCollection services)
+    public static IServiceCollection AddIdempotencyExecutionContext(this IServiceCollection services)
     {
         services.AddContext<IdempotencyExecutionContext>(
          options =>
@@ -85,4 +86,11 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+
+    [Obsolete("Use AddIdempotencyExecutionContext instead.")]
+    public static IServiceCollection AddIdempotencyExecutionContex(this IServiceCollection services)
+    {
+        return services.AddIdempotencyExecutionContext();
+    }
 }
+

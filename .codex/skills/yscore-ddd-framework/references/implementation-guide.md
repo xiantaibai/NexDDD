@@ -389,6 +389,21 @@ builder.Services.AddMediatR(cfg =>
 });
 ```
 
+如果业务系统没有任何幂等命令，可以不注册 `AddIdempotentBehavior()`：
+
+```csharp
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblies(
+        typeof(SomeApplicationAssemblyMarker).Assembly);
+
+    cfg.AddCommandLockBehavior()
+       .AddUnitOfWorkBehaviors();
+});
+```
+
+一旦注册了 `AddIdempotentBehavior()`，就必须注册幂等基础服务和 `IIdempotencyStore`。数据库版推荐直接使用 `AddDbIdempotency<TDbContext>(...)`。
+
 UnitOfWork：
 
 ```csharp
@@ -435,6 +450,18 @@ builder.Services.AddDbIdempotency<AppDbContext>(
     });
 ```
 
+如果业务项目自己实现幂等存储，可以使用基础注册：
+
+```csharp
+builder.Services.AddIdempotency(options =>
+{
+    options.DefaultExpire = TimeSpan.FromDays(1);
+});
+
+builder.Services.AddScoped<IIdempotencyStore, CustomIdempotencyStore>();
+builder.Services.AddIdempotentCommands(typeof(SomeApplicationAssemblyMarker).Assembly);
+```
+
 Command Locks：
 
 ```csharp
@@ -461,6 +488,8 @@ builder.Services.AddMySqlTransactionHandler();
 - `Command`、`Query`、`DTO` 是否放在 `Application.Contracts`。
 - 核心业务规则是否放在 Aggregate Root、Value Object 或 Domain Service。
 - `CommandHandler` 是否只做用例编排，没有手写 transaction。
+- 没有幂等命令时，是否避免无意义注册 `AddIdempotentBehavior()`。
+- 使用 `AddIdempotentBehavior()` 时，是否同时注册了 `AddDbIdempotency<TDbContext>(...)` 或 `AddIdempotency()` + `IIdempotencyStore`。
 - `QueryHandler` 是否优先使用默认 `IQueryRepository<TEntity>`，并使用 DTO projection 和 `AsNoTracking()`。
 - `IntegrationEvent` 是否只包含稳定字段，没有领域实体。
 - 写 Repository 是否只面向 Aggregate Root。
