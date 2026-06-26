@@ -1,12 +1,12 @@
 <Project>
 	<PropertyGroup>
-		<VersionPrefix>1.2.8</VersionPrefix>
+		<VersionPrefix>1.2.9</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 	</PropertyGroup>
 	<PropertyGroup>
 		<Authors>YSCore</Authors>
 		<Product>YSCore Framework</Product>
-		<Description>1. IYsRepository 聚合根仓储支持写查询，默认跟踪实体。与读查询分开来 </Description>
+		<Description>1. 优化幂等指令必须注册上下文的逻辑 </Description>
 		<owners>YSCore</owners>
 		<PackagePrefix>YSCore</PackagePrefix>
 		<PackageIconUrl></PackageIconUrl>
