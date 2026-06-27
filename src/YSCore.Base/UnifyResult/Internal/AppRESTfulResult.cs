@@ -3,40 +3,43 @@ using YSCore.Base.Exceptions;
 
 namespace YSCore.Base.UnifyResult.Internal
 {
+    /// <summary>
+    /// 定义统一 RESTful 响应结构，负责承载业务数据、错误信息和跨服务链路标识。
+    /// </summary>
     public class AppRESTfulResult<T>
     {
         /// <summary>
-        /// 状态码
+        /// HTTP 状态码。
         /// </summary>
         public int? StatusCode { get; set; }
 
         /// <summary>
-        /// 数据
+        /// 业务响应数据。
         /// </summary>
         public T Data { get; set; }
 
         /// <summary>
-        /// 执行成功
+        /// 是否执行成功。
         /// </summary>
         public bool Succeeded { get; set; }
 
         /// <summary>
-        /// 错误信息
+        /// 错误信息。
         /// </summary>
         public object Errors { get; set; }
 
         /// <summary>
-        /// 附加数据
+        /// 统一响应附加数据。
         /// </summary>
         public object Extras { get; set; }
 
         /// <summary>
-        /// 时间戳
+        /// Unix 时间戳，单位为秒。
         /// </summary>
         public long Timestamp { get; set; }
 
         /// <summary>
-        /// 请求追踪号
+        /// OpenTelemetry 跨服务链路标识；没有有效 Activity 时回退到 HTTP 请求标识。
         /// </summary>
         public string TraceId { get; set; }
 

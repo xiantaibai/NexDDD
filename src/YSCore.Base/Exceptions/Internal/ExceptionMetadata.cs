@@ -1,4 +1,4 @@
-﻿using YSCore.Base.Exceptions;
+using YSCore.Base.Exceptions;
 
 namespace YSCore.Base.Exceptions.Internal
 {
@@ -48,7 +48,7 @@ namespace YSCore.Base.Exceptions.Internal
         public AppErrorResponse PublicError { get; internal set; }
 
         /// <summary>
-        /// 请求追踪标识。
+        /// OpenTelemetry 跨服务链路标识；没有有效 Activity 时回退到 HTTP 请求标识。
         /// </summary>
         public string TraceId { get; internal set; }
     }

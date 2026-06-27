@@ -1,4 +1,4 @@
-﻿namespace YSCore.Base.Exceptions
+namespace YSCore.Base.Exceptions
 {
     /// <summary>
     /// 统一异常详情对象。
@@ -31,7 +31,7 @@
         public bool ValidationException { get; set; }
 
         /// <summary>
-        /// 请求追踪标识。
+        /// OpenTelemetry 跨服务链路标识；没有有效 Activity 时回退到 HTTP 请求标识。
         /// </summary>
         public string TraceId { get; set; }
 

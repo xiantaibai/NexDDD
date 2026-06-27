@@ -17,7 +17,7 @@
 		<PomeloVersion>8.0.2</PomeloVersion>
 	</PropertyGroup>
 	<ItemGroup>
-		<!--microsoft extensions -->
+		<!-- Microsoft 扩展包 -->
 		<PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="$(ExtensionsVersion)"/>
 		<PackageReference Update="Microsoft.Extensions.Configuration" Version="$(ExtensionsVersion)"/>
 		<PackageReference Update="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(ExtensionsVersion)"/>
@@ -30,7 +30,7 @@
 		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="$(ExtensionsVersion)"/>
 		<PackageReference Update="Microsoft.Extensions.Primitives" Version="$(ExtensionsVersion)"/>
 
-		<!--microsoft asp.net core -->
+		<!-- Microsoft ASP.NET Core -->
 		<PackageReference Update="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(FrameworkVersion)"/>
 		<PackageReference Update="Microsoft.AspNetCore.TestHost" Version="$(FrameworkVersion)"/>
 		<PackageReference Update="Microsoft.AspNetCore.Identity" Version="$(FrameworkVersion)"/>
@@ -40,7 +40,7 @@
 		<PackageReference Update="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="$(FrameworkVersion)" />
 		<PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks" Version="$(FrameworkVersion)"/>
 		<PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-		<!--microsoft entity framework -->
+		<!-- Microsoft Entity Framework Core -->
 		<PackageReference Update="Microsoft.EntityFrameworkCore" Version="$(EntityFrameworkVersion)"/>
 		<PackageReference Update="Microsoft.EntityFrameworkCore.Relational" Version="$(EntityFrameworkVersion)"/>
 		<PackageReference Update="Microsoft.EntityFrameworkCore.Sqlite" Version="$(EntityFrameworkVersion)"/>
@@ -50,25 +50,35 @@
 		<PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(NpgsqlEntityFrameworkCorePostgreSQLVersion)" />
 		<PackageReference Update="Pomelo.EntityFrameworkCore.MySql" Version="$(PomeloVersion)"/>
 
-		<!-- EFCoreSharding -->
+		<!-- EF Core 分片 -->
 		<PackageReference Update="ShardingCore" Version="7.8.1.23" />
 		<PackageReference Update="MediatR" Version="12.3.0" />
 		<PackageReference Update="Yitter.IdGenerator" Version="1.0.14" />
 		<PackageReference Update="FluentValidation.AspNetCore" Version="11.3.0" />
 		<PackageReference Update="AsyncKeyedLock" Version="8.0.1" />
 
-		<!-- Cap -->
+		<!-- CAP 分布式事务 -->
 		<PackageReference Update="DotNetCore.CAP" Version="8.2.0"/>
 		<PackageReference Update="DotNetCore.CAP.MySql" Version="8.2.0" />
 		<PackageReference Update="DotNetCore.CAP.PostgreSql" Version="8.2.0" />
 		<PackageReference Update="DotNetCore.CAP.RabbitMQ" Version="8.2.0" />
 		<PackageReference Update="DotNetCore.CAP.Dashboard" Version="8.2.0" />
 
-		<!-- Redis -->
+		<!-- Redis 基础设施 -->
 		<PackageReference Update="StackExchange.Redis.Extensions.Core" Version="11.0.0" />
 		<PackageReference Update="StackExchange.Redis.Extensions.AspNetCore" Version="11.0.0" />
 		<PackageReference Update="StackExchange.Redis.Extensions.System.Text.Json" Version="11.0.0" />
 		<PackageReference Update="StackExchange.Redis.Extensions.Protobuf" Version="11.0.0" />
 		<PackageReference Update="DistributedLock.Redis" Version="1.1.1" />
+
+		<!-- OpenTelemetry 可观测性 -->
+		<PackageReference Update="OpenTelemetry.Extensions.Hosting" Version="1.16.0" />
+		<PackageReference Update="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.16.0" />
+		<PackageReference Update="OpenTelemetry.Instrumentation.AspNetCore" Version="1.16.0" />
+		<PackageReference Update="OpenTelemetry.Instrumentation.Http" Version="1.15.1" />
+		<PackageReference Update="OpenTelemetry.Instrumentation.Runtime" Version="1.15.1" />
+
+		<!-- 测试基础设施 -->
+		<PackageReference Update="xunit.v3" Version="3.2.2" />
 	</ItemGroup>
 </Project>

@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using YSCore.Base.Diagnostics;
 using YSCore.Base.Exceptions;
 using YSCore.Base.Exceptions.Extensions;
 
 namespace ExceptionDemoApi.Controllers;
 
+/// <summary>
+/// 负责提供统一异常、错误码和 TraceId 返回行为的演示接口。
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public sealed class ExceptionDemoController : ControllerBase
@@ -14,7 +18,7 @@ public sealed class ExceptionDemoController : ControllerBase
         return new
         {
             message = "success",
-            traceId = HttpContext.TraceIdentifier,
+            traceId = YSCoreTraceContext.GetTraceId(HttpContext),
             serverTime = DateTimeOffset.UtcNow
         };
     }

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using System.Reflection;
 using YSCore.Base.App;
+using YSCore.Base.Diagnostics;
 using YSCore.Base.Exceptions;
 using YSCore.Base.Exceptions.Internal;
 using YSCore.Base.Extensions;
@@ -70,7 +71,8 @@ namespace YSCore.Base.UnifyResult
         public static ExceptionMetadata GetExceptionMetadata(Exception exception, HttpContext httpContext = null)
         {
             var friendlyException = exception as AppFriendlyException;
-            var error = ExceptionHelper.BuildErrorInfo(exception, httpContext?.TraceIdentifier);
+            var traceId = YSCoreTraceContext.GetTraceId(httpContext);
+            var error = ExceptionHelper.BuildErrorInfo(exception, traceId);
             object errors = error?.Message;
 
             if (friendlyException?.ValidationException == true)
@@ -88,7 +90,7 @@ namespace YSCore.Base.UnifyResult
                 Exception = exception,
                 Error = error,
                 PublicError = ExceptionHelper.BuildPublicError(error),
-                TraceId = httpContext?.TraceIdentifier
+                TraceId = traceId
             };
         }
 
