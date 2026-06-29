@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageId>YSCore.Templates.Ddd</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <PackageType>Template</PackageType>
+    <Title>YSCore DDD 项目模板</Title>
+    <Authors>YSCore</Authors>
+    <Description>用于快速创建基于 YSCore Framework 的标准 DDD 分层项目。</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <TargetFramework>net8.0</TargetFramework>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <ContentTargetFolders>content</ContentTargetFolders>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="content\**\*"
+             Exclude="content\**\bin\**;content\**\obj\**"
+             Pack="true"
+             PackagePath="content" />
+    <Compile Remove="content\**\*.cs" />
+    <None Remove="content\**\*" />
+    <None Update="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

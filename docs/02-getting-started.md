@@ -24,6 +24,19 @@ HTTP API
 
 第一个应用只需要使用 ASP.NET Core、MediatR、EF Core 和 YSCore 基础能力。
 
+## 使用 DDD 项目模板
+
+公司内部新项目推荐先安装仓库中的 YSCore DDD 模板：
+
+```bash
+dotnet new install ./templates/YSCore.Ddd.Template
+dotnet new tpl -n YourCompany.YourService
+```
+
+该命令会生成 `Application.Contracts`、`Application`、`Domain`、`Infrastructure`、`WebApi` 和 `Domain.Tests` 项目，并提供一个贯通 Command、Query、聚合根、Domain Event、Repository、EF Core 与 UnitOfWork 的商品示例。
+
+模板也可以打包并发布到公司 NuGet 源。安装、打包和版本参数说明见 [`templates/YSCore.Ddd.Template/README.md`](../templates/YSCore.Ddd.Template/README.md)。
+
 ## 创建 Web API 项目
 
 创建一个 ASP.NET Core Web API 项目：
