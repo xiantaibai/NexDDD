@@ -1,6 +1,6 @@
 # 常用能力
 
-YSCore 除了提供 DDD、CQRS、仓储和 UnitOfWork 等基础开发模型外，还内置了一组企业应用常用能力。
+NexDDD 除了提供 DDD、CQRS、仓储和 UnitOfWork 等基础开发模型外，还内置了一组企业应用常用能力。
 
 这些能力主要用于解决真实项目中的工程问题：
 
@@ -19,24 +19,24 @@ YSCore 除了提供 DDD、CQRS、仓储和 UnitOfWork 等基础开发模型外�
 
 部分能力需要通过 `AppHelper` 读取应用配置和根服务，例如多语言、友好异常配置、统一返回值配置等。
 
-因此，推荐在 `Program.cs` 最开始调用 `InitYsCore()`：
+因此，推荐在 `Program.cs` 最开始调用 `InitNexDDD()`：
 
 ```csharp
-using YSCore.Base.App.Extensions;
+using NexDDD.Core.App.Extensions;
 
 var builder = WebApplication.CreateBuilder(args)
-    .InitYsCore();
+    .InitNexDDD();
 ```
 
 然后再注册框架服务：
 
 ```csharp
-builder.Services.AddYsCore();
+builder.Services.AddNexDDD();
 ```
 
-`InitYsCore` 负责初始化框架应用上下文，例如配置对象、宿主环境、根服务访问能力和 `HttpContextAccessor`。
+`InitNexDDD` 负责初始化框架应用上下文，例如配置对象、宿主环境、根服务访问能力和 `HttpContextAccessor`。
 
-`AddYsCore` 负责注册框架基础服务，例如数据验证、友好异常和统一返回值。
+`AddNexDDD` 负责注册框架基础服务，例如数据验证、友好异常和统一返回值。
 
 ## 幂等
 
@@ -52,7 +52,7 @@ builder.Services.AddYsCore();
 
 如果没有幂等保护，可能会出现重复创建订单、重复扣减库存、重复发放权益等问题。
 
-YSCore 提供命令级幂等能力。一个 Command 可以通过实现 `IIdempotentCommand<TCommand>` 来声明幂等规则。
+NexDDD 提供命令级幂等能力。一个 Command 可以通过实现 `IIdempotentCommand<TCommand>` 来声明幂等规则。
 
 ```csharp
 public class CreateBlogCommandIdempotent : IIdempotentCommand<CreateBlogCommand>
@@ -141,7 +141,7 @@ builder.Services.AddDbIdempotency<AppDbContext>(
 - 同一个任务不能被多个实例同时执行
 - 同一个业务编码不能被并发创建
 
-YSCore 提供命令级锁能力。一个 Command 可以通过实现 `ICommandLock<TCommand>` 来声明锁规则。
+NexDDD 提供命令级锁能力。一个 Command 可以通过实现 `ICommandLock<TCommand>` 来声明锁规则。
 
 ```csharp
 public class CreateBlogCommandLock : ICommandLock<CreateBlogCommand>
@@ -214,7 +214,7 @@ Payment Service -> Payment Database
 
 当一个业务流程跨越多个服务时，很难使用传统数据库事务保证所有服务同时成功或同时失败。
 
-YSCore 推荐使用最终一致性，而不是强分布式事务。
+NexDDD 推荐使用最终一致性，而不是强分布式事务。
 
 常见方案是：
 
@@ -235,7 +235,7 @@ Outbox 模式的核心思想是：
 - 数据库提交成功，但消息发送失败
 - 消息发送成功，但数据库提交失败
 
-YSCore 通过 CAP Provider 支持事务消息能力。
+NexDDD 通过 CAP Provider 支持事务消息能力。
 
 使用 CAP MySQL 事务处理器后，EF Core 事务可以与 CAP 消息发布协同：
 
@@ -263,7 +263,7 @@ await _publisher.PublishAsync(
 
 ## 领域事件与集成事件
 
-YSCore 明确区分领域事件和集成事件。
+NexDDD 明确区分领域事件和集成事件。
 
 | 类型 | 说明 |
 |---|---|
@@ -305,7 +305,7 @@ public record OrderPaidIntegrationEvent(long OrderId, string OrderNo) : IIntegra
 
 多租户用于支持 SaaS 或多组织数据隔离场景。
 
-YSCore 多租户能力通常包括：
+NexDDD 多租户能力通常包括：
 
 - 租户配置
 - 租户解析
@@ -353,7 +353,7 @@ EF Core Provider 可以基于租户字段进行查询过滤，避免普通业务
 
 ## 权限
 
-YSCore 权限模型基于 ASP.NET Core Authorization 扩展。
+NexDDD 权限模型基于 ASP.NET Core Authorization 扩展。
 
 框架提供：
 
@@ -421,20 +421,20 @@ inventory.deduct
 - 请求重复提交
 - 支付回调签名无效
 
-这些错误不是系统崩溃，而是业务规则判断后的结果。YSCore 推荐使用 `AppFriendlyException` 或 `ExceptionHelper` 来表达这类错误，而不是直接抛出普通 `Exception`。
+这些错误不是系统崩溃，而是业务规则判断后的结果。NexDDD 推荐使用 `AppFriendlyException` 或 `ExceptionHelper` 来表达这类错误，而不是直接抛出普通 `Exception`。
 
 ### 开启友好异常
 
-如果已经调用 `AddYsCore`，友好异常会随框架基础能力一起注册：
+如果已经调用 `AddNexDDD`，友好异常会随框架基础能力一起注册：
 
 ```csharp
-builder.Services.AddYsCore();
+builder.Services.AddNexDDD();
 ```
 
 也可以单独注册：
 
 ```csharp
-using YSCore.Base.Exceptions.Extensions;
+using NexDDD.Core.Exceptions.Extensions;
 
 builder.Services.AddFriendlyException();
 ```
@@ -474,7 +474,7 @@ throw new AppFriendlyException("博客不存在", "Blog.NotFound");
 
 ```csharp
 using Microsoft.AspNetCore.Http;
-using YSCore.Base.Exceptions.Extensions;
+using NexDDD.Core.Exceptions.Extensions;
 
 throw new AppFriendlyException("博客不存在", "Blog.NotFound")
     .StatusCode(StatusCodes.Status404NotFound);
@@ -501,10 +501,10 @@ throw new AppFriendlyException("支付处理失败", "Payment.Failed", ex)
 
 ### 使用 ExceptionHelper
 
-YSCore 也提供 `ExceptionHelper`，适合用错误码映射业务消息。
+NexDDD 也提供 `ExceptionHelper`，适合用错误码映射业务消息。
 
 ```csharp
-using YSCore.Base.Exceptions;
+using NexDDD.Core.Exceptions;
 
 throw ExceptionHelper.AppFriendly("Blog.NotFound");
 ```
@@ -616,20 +616,20 @@ error
 
 在企业项目中，如果每个接口都返回不同结构，前端、移动端、网关和调用方都会增加大量适配成本。
 
-YSCore 默认提供 RESTful 风格统一返回模型。
+NexDDD 默认提供 RESTful 风格统一返回模型。
 
 ### 开启统一返回值
 
-如果已经调用 `AddYsCore`，统一返回值会自动注册：
+如果已经调用 `AddNexDDD`，统一返回值会自动注册：
 
 ```csharp
-builder.Services.AddYsCore();
+builder.Services.AddNexDDD();
 ```
 
 也可以单独注册：
 
 ```csharp
-using YSCore.Base.UnifyResult.Extensions;
+using NexDDD.Core.UnifyResult.Extensions;
 
 builder.Services.AddUnifyResult();
 ```
@@ -637,7 +637,7 @@ builder.Services.AddUnifyResult();
 推荐同时启用状态码拦截中间件，用于处理 401、403、404、500 等短路响应：
 
 ```csharp
-using YSCore.Base.UnifyResult.Extensions;
+using NexDDD.Core.UnifyResult.Extensions;
 
 var app = builder.Build();
 
@@ -663,7 +663,7 @@ app.UseUnifyResultStatusCodes();
   "succeeded": true,
   "data": {
     "id": 10001,
-    "name": "YSCore"
+    "name": "NexDDD"
   }
 }
 ```
@@ -680,7 +680,7 @@ app.UseUnifyResultStatusCodes();
 }
 ```
 
-YSCore 默认返回模型包含以下字段：
+NexDDD 默认返回模型包含以下字段：
 
 | 字段 | 说明 |
 |---|---|
@@ -732,7 +732,7 @@ YSCore 默认返回模型包含以下字段：
 可以使用 `[NonUnify]` 禁用：
 
 ```csharp
-using YSCore.Base.UnifyResult.Attributes;
+using NexDDD.Core.UnifyResult.Attributes;
 
 [NonUnify]
 [HttpGet("download")]
@@ -783,7 +783,7 @@ builder.Services.AddUnifyResult<MyUnifyResultProvider>();
 
 ## 数据验证
 
-YSCore 提供数据验证能力，可以在请求进入业务处理前发现参数错误。
+NexDDD 提供数据验证能力，可以在请求进入业务处理前发现参数错误。
 
 数据验证适合处理输入格式问题：
 
@@ -809,7 +809,7 @@ YSCore 提供数据验证能力，可以在请求进入业务处理前发现参�
 
 ## 多语言
 
-YSCore 支持基于 ASP.NET Core Localization 的多语言能力，适合国际化系统、多地区部署系统和 SaaS 系统。
+NexDDD 支持基于 ASP.NET Core Localization 的多语言能力，适合国际化系统、多地区部署系统和 SaaS 系统。
 
 多语言常见使用场景：
 
@@ -823,11 +823,11 @@ YSCore 支持基于 ASP.NET Core Localization 的多语言能力，适合国际�
 注册多语言服务：
 
 ```csharp
-using YSCore.Base.App.Extensions;
-using YSCore.Base.Localization.Extensions;
+using NexDDD.Core.App.Extensions;
+using NexDDD.Core.Localization.Extensions;
 
 var builder = WebApplication.CreateBuilder(args)
-    .InitYsCore();
+    .InitNexDDD();
 
 builder.Services.AddAppLocalization();
 ```
@@ -835,7 +835,7 @@ builder.Services.AddAppLocalization();
 启用多语言中间件：
 
 ```csharp
-using YSCore.Base.Localization.Extensions;
+using NexDDD.Core.Localization.Extensions;
 
 var app = builder.Build();
 
@@ -907,7 +907,7 @@ Resources
 可以通过 `L.Text` 获取本地化文本：
 
 ```csharp
-using YSCore.Base.Localization;
+using NexDDD.Core.Localization;
 
 var message = L.Text["Blog.NotFound"];
 ```
@@ -953,7 +953,7 @@ var cultures = L.GetCultures();
 
 ### 请求语言来源
 
-YSCore 使用 ASP.NET Core 的请求本地化机制，常见语言来源包括：
+NexDDD 使用 ASP.NET Core 的请求本地化机制，常见语言来源包括：
 
 - QueryString
 - Cookie
@@ -1018,14 +1018,14 @@ Blog.NotFound -> Blog not found
 
 企业系统经常需要处理跨地区时间问题。
 
-YSCore 提供 `IClock`、`Clock` 和 `TimeZoneResolver`，用于统一时间来源和时区转换策略。
+NexDDD 提供 `IClock`、`Clock` 和 `TimeZoneResolver`，用于统一时间来源和时区转换策略。
 
 ### 开启时钟服务
 
 注册时钟服务：
 
 ```csharp
-using YSCore.Base.TimeZone;
+using NexDDD.Core.TimeZone;
 
 builder.Services.AddClock();
 ```
@@ -1053,7 +1053,7 @@ builder.Services.AddClock(
 在业务代码中注入 `IClock`：
 
 ```csharp
-using YSCore.Base.TimeZone;
+using NexDDD.Core.TimeZone;
 
 public class CreateBlogCommandHandler : ICommandHandler<CreateBlogCommand, long>
 {
@@ -1213,7 +1213,7 @@ TimeZone = China Standard Time
 新项目可以按以下顺序逐步启用框架能力：
 
 ```text
-1. AddYsCore
+1. AddNexDDD
 2. MediatR
 3. UnitOfWork
 4. EF Core Provider
@@ -1237,7 +1237,7 @@ TimeZone = China Standard Time
 
 ## 小结
 
-YSCore 的常用能力围绕企业应用的真实问题设计。
+NexDDD 的常用能力围绕企业应用的真实问题设计。
 
 | 能力 | 解决的问题 |
 |---|---|
@@ -1252,4 +1252,4 @@ YSCore 的常用能力围绕企业应用的真实问题设计。
 | 多语言 | 国际化错误消息 |
 | 时区 | 跨地区时间一致性 |
 
-下一章将介绍 YSCore 的 Provider 集成，包括 EF Core、CAP、Redis、Snowflake 等基础设施实现。
+下一章将介绍 NexDDD 的 Provider 集成，包括 EF Core、CAP、Redis、Snowflake 等基础设施实现。

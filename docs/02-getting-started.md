@@ -1,6 +1,6 @@
 # 快速开始
 
-本章将带你创建一个最小可运行的 YSCore 应用，并跑通框架最核心的业务开发流程：
+本章将带你创建一个最小可运行的 NexDDD 应用，并跑通框架最核心的业务开发流程：
 
 ```text
 HTTP API
@@ -11,7 +11,7 @@ HTTP API
  -> DomainEvent
 ```
 
-本章不会展开所有高级能力，而是优先帮助你理解：在 YSCore 中，一个标准业务用例应该如何编写。
+本章不会展开所有高级能力，而是优先帮助你理解：在 NexDDD 中，一个标准业务用例应该如何编写。
 
 ## 环境准备
 
@@ -22,20 +22,20 @@ HTTP API
 - 一个 EF Core 支持的关系型数据库，例如 MySQL、SQL Server 或 PostgreSQL
 - Redis、Kafka、RabbitMQ 在本章中不是必需项
 
-第一个应用只需要使用 ASP.NET Core、MediatR、EF Core 和 YSCore 基础能力。
+第一个应用只需要使用 ASP.NET Core、MediatR、EF Core 和 NexDDD 基础能力。
 
 ## 使用 DDD 项目模板
 
-公司内部新项目推荐先安装仓库中的 YSCore DDD 模板：
+公司内部新项目推荐先安装仓库中的 NexDDD DDD 模板：
 
 ```bash
-dotnet new install ./templates/YSCore.Ddd.Template
+dotnet new install ./templates/NexDDD.Ddd.Template
 dotnet new tpl -n YourCompany.YourService
 ```
 
 该命令会生成 `Application.Contracts`、`Application`、`Domain`、`Infrastructure`、`WebApi` 和 `Domain.Tests` 项目，并提供一个贯通 Command、Query、聚合根、Domain Event、Repository、EF Core 与 UnitOfWork 的商品示例。
 
-模板也可以打包并发布到公司 NuGet 源。安装、打包和版本参数说明见 [`templates/YSCore.Ddd.Template/README.md`](../templates/YSCore.Ddd.Template/README.md)。
+模板也可以打包并发布到公司 NuGet 源。安装、打包和版本参数说明见 [`templates/NexDDD.Ddd.Template/README.md`](../templates/NexDDD.Ddd.Template/README.md)。
 
 ## 创建 Web API 项目
 
@@ -45,31 +45,31 @@ dotnet new tpl -n YourCompany.YourService
 dotnet new webapi -n YourProject.WebApi
 ```
 
-如果你直接引用 YSCore 源码，可以添加项目引用：
+如果你直接引用 NexDDD 源码，可以添加项目引用：
 
 ```bash
-dotnet add YourProject.WebApi reference path/to/YSCore.Base.csproj
-dotnet add YourProject.WebApi reference path/to/YSCore.Provider.EntityFrameworkCore.csproj
+dotnet add YourProject.WebApi reference path/to/NexDDD.Core.csproj
+dotnet add YourProject.WebApi reference path/to/NexDDD.Provider.EntityFrameworkCore.csproj
 ```
 
-如果你通过 NuGet 包使用 YSCore，可以安装对应包：
+如果你通过 NuGet 包使用 NexDDD，可以安装对应包：
 
 ```bash
-dotnet add package YSCore.Base
-dotnet add package YSCore.Provider.EntityFrameworkCore
+dotnet add package NexDDD.Core
+dotnet add package NexDDD.Provider.EntityFrameworkCore
 ```
 
 实际项目需要安装哪些包，取决于你启用了哪些能力。最小应用通常从核心包和 EF Core Provider 开始。
 
-## 注册 YSCore
+## 注册 NexDDD
 
 在 `Program.cs` 中注册框架基础服务：
 
 ```csharp
 using System.Reflection;
 using MediatR;
-using YSCore.Base.App.Extensions;
-using YSCore.Provider.EntityFrameworkCore.Extensions;
+using NexDDD.Core.App.Extensions;
+using NexDDD.Provider.EntityFrameworkCore.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,7 +77,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddYsCore();
+builder.Services.AddNexDDD();
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -97,18 +97,18 @@ app.MapControllers();
 app.Run();
 ```
 
-`AddYsCore` 会注册框架基础能力，例如数据验证、友好异常和统一返回值。
+`AddNexDDD` 会注册框架基础能力，例如数据验证、友好异常和统一返回值。
 
 `AddUnitOfWorkBehaviors` 会注册命令事务管线。启用后，CommandHandler 中通常不需要手动开启事务、提交事务或调用 `SaveChangesAsync`。
 
 ## 创建第一个 Command
 
-在 YSCore 中，Command 用来表达一次业务意图。
+在 NexDDD 中，Command 用来表达一次业务意图。
 
 例如，“创建博客”可以定义为一个 Command：
 
 ```csharp
-using YSCore.Base.Events;
+using NexDDD.Core.Events;
 
 namespace YourProject.Application.Blogs;
 
@@ -124,7 +124,7 @@ Command 应保持简单，只描述“要做什么”，不要在 Command 中编
 ```csharp
 using YourProject.Domain.Blogs;
 using YourProject.Infrastructure.EntityFrameworkCore;
-using YSCore.Base.Events;
+using NexDDD.Core.Events;
 
 namespace YourProject.Application.Blogs;
 
@@ -150,7 +150,7 @@ public class CreateBlogCommandHandler : ICommandHandler<CreateBlogCommand, bool>
 
 注意，Handler 中没有调用 `SaveChangesAsync`。
 
-YSCore 推荐以 Command 作为事务边界。CommandHandler 执行成功后，UnitOfWork 管线会自动保存实体变更并提交事务。
+NexDDD 推荐以 Command 作为事务边界。CommandHandler 执行成功后，UnitOfWork 管线会自动保存实体变更并提交事务。
 
 ## 创建实体和聚合根
 
@@ -158,7 +158,7 @@ YSCore 推荐以 Command 作为事务边界。CommandHandler 执行成功后，U
 
 ```csharp
 using Yitter.IdGenerator;
-using YSCore.Base.DatabaseAccessor;
+using NexDDD.Core.DatabaseAccessor;
 
 namespace YourProject.Domain.Blogs;
 
@@ -191,7 +191,7 @@ public class Blog : BaseEntity, IAggregateRoot
 - `CreateUserName`
 - `IsDelete`
 
-`IAggregateRoot` 用来标记聚合根。YSCore 的仓储接口默认面向聚合根设计。
+`IAggregateRoot` 用来标记聚合根。NexDDD 的仓储接口默认面向聚合根设计。
 
 ## 创建 DbContext
 
@@ -200,7 +200,7 @@ public class Blog : BaseEntity, IAggregateRoot
 ```csharp
 using Microsoft.EntityFrameworkCore;
 using YourProject.Domain.Blogs;
-using YSCore.Provider.EntityFrameworkCore;
+using NexDDD.Provider.EntityFrameworkCore;
 
 namespace YourProject.Infrastructure.EntityFrameworkCore;
 
@@ -219,7 +219,7 @@ public class AppDbContext : AppDbContextBase
 
 ```csharp
 using Microsoft.EntityFrameworkCore;
-using YSCore.Provider.EntityFrameworkCore.Extensions;
+using NexDDD.Provider.EntityFrameworkCore.Extensions;
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -238,12 +238,12 @@ builder.Services.AddUnitOfWork<AppDbContext>();
 ```json
 {
   "ConnectionStrings": {
-    "Default": "server=localhost;port=3306;database=yscore_demo;user=root;password=your_password;CharSet=utf8mb4;"
+    "Default": "server=localhost;port=3306;database=nexddd_demo;user=root;password=your_password;CharSet=utf8mb4;"
   }
 }
 ```
 
-完成这一步后，CommandHandler 可以注入 `AppDbContext`，并由 YSCore 的 UnitOfWork 管线统一提交事务。
+完成这一步后，CommandHandler 可以注入 `AppDbContext`，并由 NexDDD 的 UnitOfWork 管线统一提交事务。
 
 ## 创建 API 接口
 
@@ -286,7 +286,7 @@ API 层应该保持轻量，只负责接收 HTTP 请求并发送 Command。
 创建一个领域事件：
 
 ```csharp
-using YSCore.Base.DomainEvent;
+using NexDDD.Core.DomainEvent;
 
 namespace YourProject.Domain.Blogs.Events;
 
@@ -314,7 +314,7 @@ public Blog(string name, string code)
 ```csharp
 using Microsoft.Extensions.Logging;
 using YourProject.Domain.Blogs.Events;
-using YSCore.Base.DomainEvent;
+using NexDDD.Core.DomainEvent;
 
 namespace YourProject.Application.Blogs.Events;
 
@@ -346,7 +346,7 @@ Command 执行成功后，UnitOfWork 会保存实体变更，并自动分发实�
 创建幂等规则：
 
 ```csharp
-using YSCore.Base.Idempotency;
+using NexDDD.Core.Idempotency;
 
 namespace YourProject.Application.Blogs;
 
@@ -379,7 +379,7 @@ builder.Services.AddMediatR(cfg =>
 注册幂等命令和幂等存储。使用 EF Core 存储时：
 
 ```csharp
-using YSCore.Provider.EntityFrameworkCore.Idempotency;
+using NexDDD.Provider.EntityFrameworkCore.Idempotency;
 
 builder.Services.AddDbIdempotency<AppDbContext>(
     new[] { Assembly.GetExecutingAssembly() },
@@ -400,7 +400,7 @@ builder.Services.AddDbIdempotency<AppDbContext>(
 创建命令锁规则：
 
 ```csharp
-using YSCore.Base.CommandLocks;
+using NexDDD.Core.CommandLocks;
 
 namespace YourProject.Application.Blogs;
 
@@ -418,8 +418,8 @@ public class CreateBlogCommandLock : ICommandLock<CreateBlogCommand>
 注册命令锁管线：
 
 ```csharp
-using YSCore.Base.CommandLocks;
-using YSCore.Base.DistributedLocks;
+using NexDDD.Core.CommandLocks;
+using NexDDD.Core.DistributedLocks;
 
 builder.Services.AddMediatR(cfg =>
 {
@@ -467,7 +467,7 @@ builder.Services.AddMediatR(cfg =>
 
 ## 本章完成了什么
 
-现在你已经完成了一个最小 YSCore 业务流程：
+现在你已经完成了一个最小 NexDDD 业务流程：
 
 ```text
 POST /api/blogs
@@ -491,5 +491,5 @@ POST /api/blogs
 
 ## 下一步
 
-下一章将介绍 YSCore 推荐的企业项目结构，包括 WebApi、Application、Application.Contracts、Domain、Infrastructure 和 tests 应该如何划分职责。
+下一章将介绍 NexDDD 推荐的企业项目结构，包括 WebApi、Application、Application.Contracts、Domain、Infrastructure 和 tests 应该如何划分职责。
 

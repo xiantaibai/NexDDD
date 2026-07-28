@@ -1,20 +1,20 @@
 using ExceptionDemoApi;
 using Microsoft.Extensions.Options;
-using YSCore.Base.App.Extensions;
-using YSCore.Base.Exceptions.Handlers;
-using YSCore.Base.Localization.Extensions;
-using YSCore.Base.UnifyResult.Extensions;
-using YSCore.Base.DependencyInjection.Extensions;
+using NexDDD.Core.App.Extensions;
+using NexDDD.Core.Exceptions.Handlers;
+using NexDDD.Core.Localization.Extensions;
+using NexDDD.Core.UnifyResult.Extensions;
+using NexDDD.Core.DependencyInjection.Extensions;
 
 var builder = WebApplication.CreateBuilder(args)
-    .InitYsCore();
+    .InitNexDDD();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAppLocalization();
 
-builder.Services.AddYsCore(options =>
+builder.Services.AddNexDDD(options =>
 {
     //options.ConfigureFriendlyException(opt =>
     //{

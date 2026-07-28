@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "YSCore.Provider.Cap": {
-      "commandName": "Project",
-      "workingDirectory": "D:\\项目\\重力柜\\YS.Backstage\\ModuleBackstage\\YS.Inventory\\YS.Inventory.API\\bin\\Debug\\net8.0"
-    }
-  }
-}

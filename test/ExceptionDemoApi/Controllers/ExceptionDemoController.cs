@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using YSCore.Base.Diagnostics;
-using YSCore.Base.Exceptions;
-using YSCore.Base.Exceptions.Extensions;
+using NexDDD.Core.Diagnostics;
+using NexDDD.Core.Exceptions;
+using NexDDD.Core.Exceptions.Extensions;
 
 namespace ExceptionDemoApi.Controllers;
 
@@ -18,7 +18,7 @@ public sealed class ExceptionDemoController : ControllerBase
         return new
         {
             message = "success",
-            traceId = YSCoreTraceContext.GetTraceId(HttpContext),
+            traceId = NexDddTraceContext.GetTraceId(HttpContext),
             serverTime = DateTimeOffset.UtcNow
         };
     }

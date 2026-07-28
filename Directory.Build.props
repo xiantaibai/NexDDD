@@ -4,11 +4,11 @@
 		<VersionSuffix></VersionSuffix>
 	</PropertyGroup>
 	<PropertyGroup>
-		<Authors>YSCore</Authors>
-		<Product>YSCore Framework</Product>
-		<Description>1. 优化幂等指令必须注册上下文的逻辑 </Description>
-		<owners>YSCore</owners>
-		<PackagePrefix>YSCore</PackagePrefix>
+		<Authors>NexDDD</Authors>
+		<Product>NexDDD Framework</Product>
+		<Description>面向 .NET 应用的通用 DDD 框架，提供领域事件、命令管线、仓储、工作单元、幂等和基础设施集成能力。</Description>
+		<owners>NexDDD</owners>
+		<PackagePrefix>NexDDD</PackagePrefix>
 		<PackageIconUrl></PackageIconUrl>
 		<PackageProjectUrl></PackageProjectUrl>
 		<PackageLicenseUrl></PackageLicenseUrl>

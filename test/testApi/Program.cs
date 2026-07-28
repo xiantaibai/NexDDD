@@ -15,8 +15,8 @@ using System.Reflection;
 using testApi.Commands;
 using testApi.EntityTableRoutes;
 using testApi.MultiTenantDbContext;
-using YS.Provider.Snowflake;
-using YSCore.Provider.EntityFrameworkCore.Extensions;
+using NexDDD.Provider.Snowflake;
+using NexDDD.Provider.EntityFrameworkCore.Extensions;
 using ShardingCore.Core.ShardingConfigurations;
 using ShardingCore.Core.VirtualDatabase.VirtualDataSources;
 using ShardingCore.DynamicDataSources;
@@ -25,15 +25,15 @@ using ShardingCore.Extensions;
 using ShardingCore.Core.EntityMetadatas;
 using ShardingCore.TableCreator;
 using ShardingCore.Core.VirtualRoutes.Abstractions;
-using YSCore.Provider.EntityFrameworkCore;
+using NexDDD.Provider.EntityFrameworkCore;
 using testApi.Entites;
-using YSCore.Base.CommandLocks;
+using NexDDD.Core.CommandLocks;
 using Microsoft.EntityFrameworkCore.Migrations;
-using YSCore.Base.DistributedLocks;
+using NexDDD.Core.DistributedLocks;
 using testApi.Extensions;
-using YSCore.Base.Idempotency;
-using YSCore.Provider.EntityFrameworkCore.Idempotency;
-using YSCore.Base.DatabaseAccessor.Repositories;
+using NexDDD.Core.Idempotency;
+using NexDDD.Provider.EntityFrameworkCore.Idempotency;
+using NexDDD.Core.DatabaseAccessor.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -191,6 +191,9 @@ app.MapPost("/blog2", async ([FromServices] TestDbContext dbcontext, [FromBody] 
 
 app.Run();
 
+/// <summary>
+/// 承载示例与回归验证流程中的不可变消息数据，供处理器、管线或基础设施组件传递。
+/// </summary>
 internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);

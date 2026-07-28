@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using YSCore.Base.DependencyInjection.Dependencies;
-using YSCore.Base.Diagnostics;
-using YSCore.Base.Exceptions;
-using YSCore.Base.Exceptions.Handlers;
-using YSCore.Base.UnifyResult;
+using NexDDD.Core.DependencyInjection.Dependencies;
+using NexDDD.Core.Diagnostics;
+using NexDDD.Core.Exceptions;
+using NexDDD.Core.Exceptions.Handlers;
+using NexDDD.Core.UnifyResult;
 
 namespace ExceptionDemoApi;
 
@@ -17,7 +17,7 @@ public sealed class DemoGlobalExceptionHandler(ILogger<DemoGlobalExceptionHandle
     {
         logger.LogError(context.Exception,
             "Demo exception captured. traceId:{TraceId}, path:{Path}",
-            YSCoreTraceContext.GetTraceId(context.HttpContext),
+            NexDddTraceContext.GetTraceId(context.HttpContext),
             context.HttpContext.Request.Path);
 
         // 2. 可以在这里对特定异常进行特殊处理，例如发送通知、记录日志等

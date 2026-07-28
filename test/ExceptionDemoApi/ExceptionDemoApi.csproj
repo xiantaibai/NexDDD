@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\YSCore.Base\YSCore.Base.csproj" />
+    <ProjectReference Include="..\..\src\NexDDD.Core\NexDDD.Core.csproj" />
   </ItemGroup>
 
 </Project>

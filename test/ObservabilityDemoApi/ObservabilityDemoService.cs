@@ -1,6 +1,6 @@
-using YSCore.Base.Diagnostics;
-using YSCore.Observability.Abstractions;
-using YSCore.Observability.Extensions;
+using NexDDD.Core.Diagnostics;
+using NexDDD.Observability.Abstractions;
+using NexDDD.Observability.Extensions;
 
 namespace ObservabilityDemoApi;
 
@@ -8,7 +8,7 @@ namespace ObservabilityDemoApi;
 /// 负责模拟订单处理流程，为 Demo 生成结构化日志、嵌套链路、成功指标和异常指标。
 /// </summary>
 public sealed class ObservabilityDemoService(
-    IYsObservability observability,
+    INexObservability observability,
     ObservabilityDemoMetrics metrics,
     ILogger<ObservabilityDemoService> logger)
 {
@@ -49,7 +49,7 @@ public sealed class ObservabilityDemoService(
             operation.SetTag("order.status", "confirmed");
             operation.SetSuccess();
             logger.LogInformation("演示订单 {OrderId} 处理完成", orderId);
-            return YSCoreTraceContext.GetTraceId() ?? string.Empty;
+            return NexDddTraceContext.GetTraceId() ?? string.Empty;
         }
         catch (Exception exception)
         {

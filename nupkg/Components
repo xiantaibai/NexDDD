@@ -1,6 +1,6 @@
-src/YSCore.Base
-src/YS.Provider.Cap
-src/YS.Provider.Snowflake
-src/YS.Provider.EntityFrameworkCore
-src/YSCore.Provider.Redis
-src/YSCore.Provider.DistributedLocks.Redis
+src/NexDDD.Core
+src/NexDDD.Provider.Cap
+src/NexDDD.Provider.Snowflake
+src/NexDDD.Provider.EntityFrameworkCore
+src/NexDDD.Provider.Redis
+src/NexDDD.Provider.DistributedLocks.Redis

@@ -4,7 +4,7 @@ param(
     [string]$Repository = "https://nuget.ourvend.com/v3/index.json",
 
     [Parameter(Mandatory = $false)]
-    [string]$ApiKey = $env:YSCORE_NUGET_API_KEY,
+    [string]$ApiKey = $env:NEXDDD_NUGET_API_KEY,
 
     [Parameter(Mandatory = $false)]
     [string]$Version,
@@ -16,7 +16,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $rootFolder = Split-Path -Path $PSScriptRoot -Parent
-$projectPath = Join-Path $rootFolder "templates\YSCore.Ddd.Template\YSCore.Templates.Ddd.csproj"
+$projectPath = Join-Path $rootFolder "templates\NexDDD.Ddd.Template\NexDDD.Templates.Ddd.csproj"
 $outputFolder = $PSScriptRoot
 
 if (-not (Test-Path -LiteralPath $projectPath -PathType Leaf)) {
@@ -39,7 +39,7 @@ if ([string]::IsNullOrWhiteSpace($Version)) {
     throw "PackageVersion was not found. Specify it with -Version."
 }
 
-$packagePath = Join-Path $outputFolder "YSCore.Templates.Ddd.$Version.nupkg"
+$packagePath = Join-Path $outputFolder "NexDDD.Templates.Ddd.$Version.nupkg"
 $packArguments = @(
     "pack",
     $projectPath,
@@ -100,4 +100,4 @@ if ($LASTEXITCODE -ne 0) {
     throw "dotnet nuget push failed with exit code $LASTEXITCODE."
 }
 
-Write-Host "Template published: YSCore.Templates.Ddd@$Version"
+Write-Host "Template published: NexDDD.Templates.Ddd@$Version"

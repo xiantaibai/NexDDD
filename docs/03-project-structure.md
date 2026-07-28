@@ -1,6 +1,6 @@
 # 推荐项目结构
 
-YSCore 推荐使用清晰的分层项目结构来组织企业应用代码。
+NexDDD 推荐使用清晰的分层项目结构来组织企业应用代码。
 
 这种结构适合单体、模块化单体和微服务应用。对于微服务系统，每个服务都可以使用同样的结构；对于模块化单体，可以在一个解决方案中按模块复用这套结构。
 
@@ -69,7 +69,7 @@ YourProject.Infrastructure
  └── YourProject.Application.Contracts
 
 YourProject.Domain
- └── YSCore.Base
+ └── NexDDD.Core
 ```
 
 可以用更简单的图表示：
@@ -88,7 +88,7 @@ Infrastructure
   -> Application.Contracts
 
 Domain
-  -> YSCore.Base
+  -> NexDDD.Core
 ```
 
 需要重点遵守以下规则：
@@ -241,7 +241,7 @@ CommandHandler 中不推荐做这些事：
 - 把大量业务规则写成过程式代码
 - 直接返回 EF Core 实体给 API
 
-YSCore 推荐通过 UnitOfWork Pipeline 统一处理事务。
+NexDDD 推荐通过 UnitOfWork Pipeline 统一处理事务。
 
 ## Domain 层
 
@@ -591,7 +591,7 @@ public record BlogCreatedIntegrationEvent(long BlogId, string Name, string Code)
 
 ## 小结
 
-YSCore 推荐使用分层结构来保持企业应用的长期可维护性。
+NexDDD 推荐使用分层结构来保持企业应用的长期可维护性。
 
 最重要的原则是：
 

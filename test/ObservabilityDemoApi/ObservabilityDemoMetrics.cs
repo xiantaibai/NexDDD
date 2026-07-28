@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
-using YSCore.Observability;
+using NexDDD.Observability;
 
 namespace ObservabilityDemoApi;
 
@@ -18,26 +18,26 @@ public sealed class ObservabilityDemoMetrics
     public ObservabilityDemoMetrics(IMeterFactory meterFactory)
     {
         var meter = meterFactory.Create(
-            YSCoreObservabilityConstants.BusinessMeterName);
+            NexDddObservabilityConstants.BusinessMeterName);
 
         _ordersProcessed = meter.CreateCounter<long>(
-            "yscore.demo.orders.processed",
+            "nexddd.demo.orders.processed",
             unit: "{order}",
             description: "演示订单处理总数。");
         _ordersActive = meter.CreateUpDownCounter<long>(
-            "yscore.demo.orders.active",
+            "nexddd.demo.orders.active",
             unit: "{order}",
             description: "当前正在处理的演示订单数量。");
         _orderDuration = meter.CreateHistogram<double>(
-            "yscore.demo.order.processing.duration",
+            "nexddd.demo.order.processing.duration",
             unit: "s",
             description: "演示订单处理耗时。");
         _backgroundSamples = meter.CreateCounter<long>(
-            "yscore.demo.background.samples",
+            "nexddd.demo.background.samples",
             unit: "{sample}",
             description: "后台独立指标采样次数。");
         meter.CreateObservableGauge(
-            "yscore.demo.order.queue.depth",
+            "nexddd.demo.order.queue.depth",
             () => Interlocked.Read(ref _queueDepth),
             unit: "{order}",
             description: "演示订单队列当前深度。");

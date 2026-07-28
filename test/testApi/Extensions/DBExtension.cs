@@ -4,20 +4,23 @@ using Microsoft.Extensions.Logging;
 using ShardingCore;
 using ShardingCore.Core.DbContextCreator;
 using ShardingCore.TableExists.Abstractions;
-using YSCore.Base.App;
-using YSCore.Provider.EntityFrameworkCore.Extensions;
+using NexDDD.Core.App;
+using NexDDD.Provider.EntityFrameworkCore.Extensions;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using testApi.EntityTableRoutes;
 using testApi.MultiTenantDbContext;
 using DotNetCore.CAP;
-using YSCore.Base.Integration;
+using NexDDD.Core.Integration;
 using testApi.Events;
-using YSCore.Provider.Cap;
+using NexDDD.Provider.Cap;
 
 namespace testApi.Extensions
 {
+    /// <summary>
+    /// 提供示例与回归验证模块的注册与扩展入口，集中封装基础设施接入和通用辅助操作。
+    /// </summary>
     public static class DBExtension
     {
         /// <summary>

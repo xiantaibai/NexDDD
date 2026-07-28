@@ -6,6 +6,7 @@ namespace testApi.MultiTenantDbContext;
 
 /// <summary>
 /// 自定表 初始化
+/// 用于验证请求上下文相关行为，确保公开契约和运行结果保持正确。
 /// </summary>
 public class CusMySqlTableEnsureManager : AbstractTableEnsureManager
 {

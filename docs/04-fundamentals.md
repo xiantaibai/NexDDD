@@ -1,6 +1,6 @@
 # 基础开发指南
 
-本章介绍 YSCore 日常开发中最常用的基础模型和开发方式。
+本章介绍 NexDDD 日常开发中最常用的基础模型和开发方式。
 
 如果你已经完成了“快速开始”，那么本章会进一步解释：为什么推荐这样写，以及在真实项目中应该如何组织 Command、Handler、仓储、UnitOfWork、领域事件和集成事件。
 
@@ -198,7 +198,7 @@ Application 层负责用例编排，Domain 层负责业务规则。
 
 Query 表示一次数据读取请求。
 
-YSCore 当前核心重点是 Command 管线，但在企业应用中，仍然建议使用 Query 来组织复杂查询。
+NexDDD 当前核心重点是 Command 管线，但在企业应用中，仍然建议使用 Query 来组织复杂查询。
 
 推荐命名：
 
@@ -262,10 +262,10 @@ public class GetBlogQueryHandler : IRequestHandler<GetBlogQuery, BlogDto>
 
 仓储用于访问聚合根。
 
-YSCore 的仓储接口要求实体必须是聚合根：
+NexDDD 的仓储接口要求实体必须是聚合根：
 
 ```csharp
-public interface IYsRepository<TEntity> : IReadableRepository<TEntity>
+public interface INexRepository<TEntity> : IReadableRepository<TEntity>
     where TEntity : notnull, Entity, IAggregateRoot
 {
 }
@@ -276,7 +276,7 @@ public interface IYsRepository<TEntity> : IReadableRepository<TEntity>
 例如：
 
 ```csharp
-public interface IBlogRepository : IYsRepository<Blog, long>
+public interface IBlogRepository : INexRepository<Blog, long>
 {
     Task<Blog?> FindByCodeAsync(string code, CancellationToken cancellationToken = default);
 }
@@ -285,7 +285,7 @@ public interface IBlogRepository : IYsRepository<Blog, long>
 仓储实现可以放在 Infrastructure 层：
 
 ```csharp
-public class BlogRepository : YsRepositoryBase<Blog, long, AppDbContext>, IBlogRepository
+public class BlogRepository : XRepositoryBase<Blog, long, AppDbContext>, IBlogRepository
 {
     public BlogRepository(AppDbContext context)
         : base(context)
@@ -321,7 +321,7 @@ public class BlogRepository : YsRepositoryBase<Blog, long, AppDbContext>, IBlogR
 
 UnitOfWork 用于管理一次业务操作中的数据变更和事务提交。
 
-YSCore 中的核心接口是：
+NexDDD 中的核心接口是：
 
 ```csharp
 public interface IUnitOfWork : IDisposable
@@ -334,7 +334,7 @@ public interface IUnitOfWork : IDisposable
 
 其中 `SaveEntitiesAsync` 不只是保存数据库变更，还会协调领域事件分发。
 
-在 Command 管线中，YSCore 会自动执行：
+在 Command 管线中，NexDDD 会自动执行：
 
 ```text
 开启事务
@@ -360,7 +360,7 @@ await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
 ## UnitOfWork 的事务边界
 
-YSCore 推荐一个 Command 对应一个事务边界。
+NexDDD 推荐一个 Command 对应一个事务边界。
 
 例如：
 
@@ -426,7 +426,7 @@ public class BlogCreatedDomainEventHandler : IDomainEventHandler<BlogCreatedDoma
 
 ## 领域事件与事务
 
-YSCore 的 EF Core Provider 会在 `SaveEntitiesAsync` 中分发领域事件。
+NexDDD 的 EF Core Provider 会在 `SaveEntitiesAsync` 中分发领域事件。
 
 典型顺序是：
 
@@ -499,7 +499,7 @@ public class BlogCreatedIntegrationEventHandler
 
 业务代码依赖的是 `IIntegrationEventPublisher` 和 `IIntegrationEventHandler<T>`，不是 CAP 的原生 API。
 
-CAP 只是 YSCore 的一种 Provider 实现。
+CAP 只是 NexDDD 的一种 Provider 实现。
 
 ## 领域事件与集成事件的区别
 
@@ -551,7 +551,7 @@ DTO 适合放在 `Application.Contracts` 层。
 
 ## 应用服务
 
-YSCore 推荐优先使用 Command / Query 组织业务用例。
+NexDDD 推荐优先使用 Command / Query 组织业务用例。
 
 但在某些场景中，也可以定义应用服务接口，例如：
 
@@ -617,7 +617,7 @@ public interface IBlogAppService
 
 ## 小结
 
-YSCore 的基础开发模型可以概括为：
+NexDDD 的基础开发模型可以概括为：
 
 ```text
 Command 表达业务意图
@@ -628,7 +628,6 @@ UnitOfWork 管理事务和领域事件
 IntegrationEvent 完成服务间通信
 ```
 
-掌握这些基础概念后，就可以开始使用 YSCore 编写大多数企业应用场景。
+掌握这些基础概念后，就可以开始使用 NexDDD 编写大多数企业应用场景。
 
-下一章将介绍 YSCore 的常用能力，包括幂等、分布式锁、分布式事务与 Outbox、多租户、权限、异常处理和统一返回值。
-
+下一章将介绍 NexDDD 的常用能力，包括幂等、分布式锁、分布式事务与 Outbox、多租户、权限、异常处理和统一返回值。

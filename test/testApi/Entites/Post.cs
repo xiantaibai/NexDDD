@@ -1,9 +1,12 @@
 using testApi.MultiTenantDbContext;
-using YSCore.Base.DatabaseAccessor;
-using YSCore.Base.DatabaseAccessor.Filter;
+using NexDDD.Core.DatabaseAccessor;
+using NexDDD.Core.DatabaseAccessor.Filter;
 
 namespace testApi.Entites;
 
+/// <summary>
+/// 用于验证示例与回归验证相关行为，确保框架重命名后契约和运行结果保持正确。
+/// </summary>
 public class Post : BaseEntity, ITenantIdFilter
 {
     public long TenantId { get; set; }

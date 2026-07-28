@@ -1,11 +1,17 @@
 using testApi.Entites;
-using YSCore.Base.DomainEvent;
-using YSCore.Base.Integration;
+using NexDDD.Core.DomainEvent;
+using NexDDD.Core.Integration;
 
 namespace testApi.Events;
 
+/// <summary>
+/// 承载领域事件流程中的不可变消息数据，供处理器、管线或基础设施组件传递。
+/// </summary>
 public record CreateBlogDomainEvent(Blog blog) : IDomainEvent;
 
+/// <summary>
+/// 负责领域事件流程的处理与编排，协调上游请求和下游服务完成当前用例。
+/// </summary>
 public class CreateBlogDomainEventHandler(IIntegrationEventPublisher publisher) : IDomainEventHandler<CreateBlogDomainEvent>
 {
     public async Task Handle(CreateBlogDomainEvent notification, CancellationToken cancellationToken)

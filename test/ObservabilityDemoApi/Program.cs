@@ -1,9 +1,9 @@
 using ObservabilityDemoApi;
-using YSCore.Base.Diagnostics;
-using YSCore.Observability.Extensions;
+using NexDDD.Core.Diagnostics;
+using NexDDD.Observability.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.AddYSCoreObservability();
+builder.AddNexDddObservability();
 builder.Services.AddHttpClient("observability-demo");
 builder.Services.AddSingleton<ObservabilityDemoMetrics>();
 builder.Services.AddScoped<ObservabilityDemoService>();
@@ -16,7 +16,7 @@ app.MapGet(
     () => Results.Ok(
         new
         {
-            service = "YSCore Observability Demo",
+            service = "NexDDD Observability Demo",
             examples = new[]
             {
                 "GET /observability",
@@ -90,7 +90,7 @@ app.MapGet(
                 statusCode: StatusCodes.Status500InternalServerError,
                 extensions: new Dictionary<string, object?>
                 {
-                    ["traceId"] = YSCoreTraceContext.GetTraceId()
+                    ["traceId"] = NexDddTraceContext.GetTraceId()
                 });
         }
     });
@@ -109,7 +109,7 @@ app.MapGet(
             new
             {
                 message = "已输出 Information 和 Warning 结构化日志",
-                traceId = YSCoreTraceContext.GetTraceId()
+                traceId = NexDddTraceContext.GetTraceId()
             });
     });
 
@@ -128,14 +128,14 @@ app.MapGet(
                 operationCount = actualCount,
                 metrics = new[]
                 {
-                    "yscore.demo.orders.processed",
-                    "yscore.demo.orders.active",
-                    "yscore.demo.order.processing.duration",
-                    "yscore.demo.order.queue.depth",
-                    "yscore.demo.background.samples"
+                    "nexddd.demo.orders.processed",
+                    "nexddd.demo.orders.active",
+                    "nexddd.demo.order.processing.duration",
+                    "nexddd.demo.order.queue.depth",
+                    "nexddd.demo.background.samples"
                 },
                 createsBusinessTrace = false,
-                traceId = YSCoreTraceContext.GetTraceId()
+                traceId = NexDddTraceContext.GetTraceId()
             });
     });
 
@@ -156,7 +156,7 @@ app.MapGet(
             {
                 downstreamStatus = (int)response.StatusCode,
                 downstreamContent = content,
-                traceId = YSCoreTraceContext.GetTraceId()
+                traceId = NexDddTraceContext.GetTraceId()
             });
     });
 
@@ -169,7 +169,7 @@ app.MapGet(
             new
             {
                 message = "downstream completed",
-                traceId = YSCoreTraceContext.GetTraceId()
+                traceId = NexDddTraceContext.GetTraceId()
             });
     });
 
@@ -177,5 +177,6 @@ app.Run();
 
 /// <summary>
 /// 作为可观测性示例应用的入口类型，并支持测试宿主发现该应用。
+/// 用于验证可观测性相关行为，确保公开契约和运行结果保持正确。
 /// </summary>
 public partial class Program;

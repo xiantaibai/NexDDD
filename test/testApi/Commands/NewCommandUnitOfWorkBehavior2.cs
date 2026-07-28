@@ -1,12 +1,15 @@
 using MediatR;
-using YSCore.Provider.EntityFrameworkCore;
-using YSCore.Base.Diagnostics;
-using YSCore.Base.Events;
+using NexDDD.Provider.EntityFrameworkCore;
+using NexDDD.Core.Diagnostics;
+using NexDDD.Core.Events;
 using ShardingCore.Core.DbContextCreator;
 using testApi.MultiTenantDbContext;
 
 namespace testApi.Commands
 {
+    /// <summary>
+    /// 负责示例与回归验证流程的处理与编排，协调上游请求和下游服务完成当前用例。
+    /// </summary>
     public class NewCommandUnitOfWorkBehavior2<TCommand, TResponse> : IPipelineBehavior<TCommand, TResponse>
         where TCommand : IBaseCommand
     {
