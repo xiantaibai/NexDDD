@@ -1,0 +1,204 @@
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using NexDDD.Provider.EntityFrameworkCore;
+using NexDDD.Core.DatabaseAccessor;
+using NexDDD.Core.Diagnostics;
+
+namespace NexDDD.Provider.EntityFrameworkCore.Extensions
+{
+    /// <summary>
+    /// 提供EF Core 持久化模块的注册与扩展入口，集中封装基础设施接入和通用辅助操作。
+    /// </summary>
+    public static class MediatorExtension
+    {
+        private static readonly DiagnosticListener _diagnosticListener =
+            new DiagnosticListener(NexDddDiagnosticListenerNames.DiagnosticListenerName);
+
+        public static async Task DispatchDomainEventsAsync(this IMediator mediator, AppDbContextBase ctx, CancellationToken cancellationToken = default)
+        {
+            var domainEntities = ctx.ChangeTracker
+                .Entries<Entity>()
+                .Where(x => x.Entity.GetDomainEvents().Any())
+                .ToList();
+
+            var domainEvents = domainEntities
+                .SelectMany(x => x.Entity.GetDomainEvents())
+                .ToList();
+
+            if (domainEvents.Count == 0)
+            {
+                return;
+            }
+
+            domainEntities.ToList()
+                .ForEach(entity => entity.Entity.ClearDomainEvents());
+
+            //foreach (var domainEvent in domainEvents)
+            //    await mediator.Publish(domainEvent);
+            foreach (var domainEvent in domainEvents)
+            {
+                Guid id = Guid.NewGuid();
+                var eventType = domainEvent.GetType();
+                var eventTypeName = eventType.FullName ?? eventType.Name;
+                try
+                {
+                    WriteDomainEventHandlerBegin(new DomainEventHandlerBegin(id, eventTypeName, domainEvent));
+                    await mediator.Publish(domainEvent, cancellationToken);
+                    WriteDomainEventHandlerEnd(new DomainEventHandlerEnd(id, eventTypeName, domainEvent));
+                }
+                catch (Exception e)
+                {
+                    WriteDomainEventError(new DomainEventHandlerError(id, eventTypeName, domainEvent, e));
+                    throw;
+                }
+            }
+        }
+
+        public static async Task DispatchDomainEventsAsync(this IMediator mediator, ShardingTableDbContext ctx, CancellationToken cancellationToken = default)
+        {
+            var domainEntities = ctx.ChangeTracker
+                .Entries<Entity>()
+                .Where(x => x.Entity.GetDomainEvents().Any())
+                .ToList();
+
+            var domainEvents = domainEntities
+                .SelectMany(x => x.Entity.GetDomainEvents())
+                .ToList();
+
+            if (domainEvents.Count == 0)
+            {
+                return;
+            }
+
+            domainEntities.ToList()
+                .ForEach(entity => entity.Entity.ClearDomainEvents());
+
+            //foreach (var domainEvent in domainEvents)
+            //    await mediator.Publish(domainEvent);
+            foreach (var domainEvent in domainEvents)
+            {
+                Guid id = Guid.NewGuid();
+                var eventType = domainEvent.GetType();
+                var eventTypeName = eventType.FullName ?? eventType.Name;
+                try
+                {
+                    WriteDomainEventHandlerBegin(new DomainEventHandlerBegin(id, eventTypeName, domainEvent));
+                    await mediator.Publish(domainEvent, cancellationToken);
+                    WriteDomainEventHandlerEnd(new DomainEventHandlerEnd(id, eventTypeName, domainEvent));
+                }
+                catch (Exception e)
+                {
+                    WriteDomainEventError(new DomainEventHandlerError(id, eventTypeName, domainEvent, e));
+                    throw;
+                }
+            }
+        }
+
+        public static async Task DispatchDomainEventsAsync(this IMediator mediator, DbContext ctx, CancellationToken cancellationToken = default)
+        {
+            var domainEntities = ctx.ChangeTracker
+                .Entries<Entity>()
+                .Where(x => x.Entity.GetDomainEvents().Any())
+                .ToList();
+
+            var domainEvents = domainEntities
+                .SelectMany(x => x.Entity.GetDomainEvents())
+                .ToList();
+
+            if (domainEvents.Count == 0)
+            {
+                return;
+            }
+
+            domainEntities.ToList()
+                .ForEach(entity => entity.Entity.ClearDomainEvents());
+
+            //foreach (var domainEvent in domainEvents)
+            //    await mediator.Publish(domainEvent);
+            foreach (var domainEvent in domainEvents)
+            {
+                Guid id = Guid.NewGuid();
+                var eventType = domainEvent.GetType();
+                var eventTypeName = eventType.FullName ?? eventType.Name;
+                try
+                {
+                    WriteDomainEventHandlerBegin(new DomainEventHandlerBegin(id, eventTypeName, domainEvent));
+                    await mediator.Publish(domainEvent, cancellationToken);
+                    WriteDomainEventHandlerEnd(new DomainEventHandlerEnd(id, eventTypeName, domainEvent));
+                }
+                catch (Exception e)
+                {
+                    WriteDomainEventError(new DomainEventHandlerError(id, eventTypeName, domainEvent, e));
+                    throw;
+                }
+            }
+        }
+
+        public static async Task DispatchDomainEventsAsync<TContext>(this IMediator mediator, TContext ctx, CancellationToken cancellationToken = default)
+    where TContext : DbContext
+        {
+            var domainEntities = ctx.ChangeTracker
+                .Entries<Entity>()
+                .Where(x => x.Entity.GetDomainEvents().Any())
+                .ToList();
+
+            var domainEvents = domainEntities
+                .SelectMany(x => x.Entity.GetDomainEvents())
+                .ToList();
+
+            if (domainEvents.Count == 0)
+                return;
+
+            domainEntities.ForEach(entity => entity.Entity.ClearDomainEvents());
+
+            foreach (var domainEvent in domainEvents)
+            {
+                Guid id = Guid.NewGuid();
+                var eventType = domainEvent.GetType();
+                var eventTypeName = eventType.FullName ?? eventType.Name;
+                try
+                {
+                    WriteDomainEventHandlerBegin(new DomainEventHandlerBegin(id, eventTypeName, domainEvent));
+                    await mediator.Publish(domainEvent, cancellationToken);
+                    WriteDomainEventHandlerEnd(new DomainEventHandlerEnd(id, eventTypeName, domainEvent));
+                }
+                catch (Exception e)
+                {
+                    WriteDomainEventError(new DomainEventHandlerError(id, eventTypeName, domainEvent, e));
+                    throw;
+                }
+            }
+        }
+
+        static void WriteDomainEventHandlerBegin(DomainEventHandlerBegin data)
+        {
+            if (_diagnosticListener.IsEnabled(NexDddDiagnosticListenerNames.DomainEventHandlerBegin))
+            {
+                _diagnosticListener.Write(NexDddDiagnosticListenerNames.DomainEventHandlerBegin, data);
+            }
+        }
+
+        static void WriteDomainEventHandlerEnd(DomainEventHandlerEnd data)
+        {
+            if (_diagnosticListener.IsEnabled(NexDddDiagnosticListenerNames.DomainEventHandlerEnd))
+            {
+                _diagnosticListener.Write(NexDddDiagnosticListenerNames.DomainEventHandlerEnd, data);
+            }
+        }
+
+        static void WriteDomainEventError(DomainEventHandlerError data)
+        {
+            if (_diagnosticListener.IsEnabled(NexDddDiagnosticListenerNames.DomainEventHandlerError))
+            {
+                _diagnosticListener.Write(NexDddDiagnosticListenerNames.DomainEventHandlerError, data);
+            }
+        }
+    }
+}

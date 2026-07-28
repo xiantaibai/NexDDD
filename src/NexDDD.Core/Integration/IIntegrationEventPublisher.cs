@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NexDDD.Core.Integration
+{
+    /// <summary>
+    /// 集成事件发布
+    /// </summary>
+    public interface IIntegrationEventPublisher
+    {
+        Task PublishAsync<TIntegrationEvent>(TIntegrationEvent integrationEvent, CancellationToken cancellationToken = default) where TIntegrationEvent : IIntegrationEvent;
+
+
+        Task PublishAsync<TIntegrationEvent>(TIntegrationEvent integrationEvent, IDictionary<string, string?> headers, CancellationToken cancellationToken = default) where TIntegrationEvent : IIntegrationEvent;
+    }
+}

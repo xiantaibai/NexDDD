@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NexDDD.Provider.Cap": {
+      "commandName": "Project",
+      "workingDirectory": "."
+    }
+  }
+}

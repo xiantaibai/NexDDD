@@ -1,0 +1,194 @@
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using NexDDD.Core.DatabaseAccessor;
+using NexDDD.Core.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
+using System.Xml;
+using System.Linq.Expressions;
+using NexDDD.Core.DatabaseAccessor.Filter;
+using Microsoft.VisualBasic;
+using NexDDD.Provider.EntityFrameworkCore.Extensions;
+using NexDDD.Provider.EntityFrameworkCore.Idempotency;
+
+namespace NexDDD.Provider.EntityFrameworkCore
+{
+    /// <summary>
+    /// 提供EF Core 持久化模块的运行上下文，协调状态生命周期及其与依赖组件的交互。
+    /// </summary>
+    public class AppDbContextBase : DbContext, ITransactionUnitOfWork
+    {
+        private static readonly DiagnosticListener _diagnosticListener =
+            new(NexDddDiagnosticListenerNames.DiagnosticListenerName);
+
+        public IServiceProvider _serviceProvider;
+
+        private readonly IMediator _mediator;
+        readonly IPublisherTransactionHandler? _publisherTransactionFactory;
+
+        protected AppDbContextBase(DbContextOptions options, IServiceProvider provider) :
+            base(options)
+        {
+            _serviceProvider = provider;
+            _mediator = GetService<IMediator>();
+            _publisherTransactionFactory = GetService<IPublisherTransactionHandler>();
+        }
+
+        // 获取服务
+        public T GetService<T>() where T : class
+            => _serviceProvider.GetService<T>();
+
+        //protected virtual void ConfigureStronglyTypedIdValueConverter(ModelConfigurationBuilder configurationBuilder)
+        //{
+        //}
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // IsDelete 过滤器
+            modelBuilder.AddQueryFilter<IDeletedFilter>(x => x.IsDelete == false);
+            modelBuilder.AddIdempotencyModel();
+        }
+
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            base.ConfigureConventions(configurationBuilder);
+
+            configurationBuilder.Properties<string>()
+                                .HaveMaxLength(256);
+
+            configurationBuilder
+               .Properties<decimal>()
+               .HavePrecision(18, 2);
+
+            configurationBuilder
+                .Properties<decimal?>()
+                .HavePrecision(18, 2);
+        }
+
+        #region IUnitOfWork
+
+        public IDbContextTransaction? CurrentTransaction { get; private set; }
+
+        public IDbContextTransaction BeginTransaction()
+        {
+            if (_publisherTransactionFactory != null)
+            {
+                CurrentTransaction = _publisherTransactionFactory.BeginTransaction(this);
+            }
+            else
+            {
+                CurrentTransaction = Database.BeginTransaction();
+            }
+
+            WriteTransactionBegin(CurrentTransaction.TransactionId);
+            return CurrentTransaction;
+        }
+
+
+        public async Task CommitAsync(CancellationToken cancellationToken = default)
+        {
+            if (CurrentTransaction != null)
+            {
+                await CurrentTransaction.CommitAsync(cancellationToken);
+                WriteTransactionCommit(CurrentTransaction.TransactionId);
+                CurrentTransaction = null;
+            }
+        }
+
+        public async Task RollbackAsync(CancellationToken cancellationToken = default)
+        {
+            if (CurrentTransaction != null)
+            {
+                await CurrentTransaction.RollbackAsync(cancellationToken);
+                WriteTransactionRollback(CurrentTransaction.TransactionId);
+                CurrentTransaction = null;
+            }
+        }
+
+        public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default)
+        {
+            if (CurrentTransaction == null)
+            {
+                CurrentTransaction = this.BeginTransaction();
+                await using (CurrentTransaction)
+                {
+                    try
+                    {
+                        // ensure field 'Id' initialized when new entity added
+                        await BeforeSaveEntitiesAsync(cancellationToken);
+                        await base.SaveChangesAsync(cancellationToken);
+                        await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
+                        await CommitAsync(cancellationToken);
+                        return true;
+                    }
+                    catch
+                    {
+                        await RollbackAsync(cancellationToken);
+                        throw;
+                    }
+                }
+            }
+            else
+            {
+                await BeforeSaveEntitiesAsync(cancellationToken);
+                await base.SaveChangesAsync(cancellationToken);
+                await _mediator.DispatchDomainEventsAsync(this, cancellationToken);
+                return true;
+            }
+        }
+
+        protected internal virtual Task BeforeSaveEntitiesAsync(CancellationToken cancellationToken = default)
+        {
+            var modifiedEntries = ChangeTracker.Entries()
+            .Where(e => e.State == EntityState.Modified);
+
+            foreach (var entry in modifiedEntries)
+            {
+                if (entry.Entity is BaseEntity myEntity)
+                {
+                    myEntity.LastModifyTime = DateTime.UtcNow; // 设置为当前时间
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+
+        #endregion
+
+
+        #region DiagnosticListener
+
+        void WriteTransactionBegin(Guid data)
+        {
+            if (_diagnosticListener.IsEnabled(NexDddDiagnosticListenerNames.TransactionBegin))
+            {
+                _diagnosticListener.Write(NexDddDiagnosticListenerNames.TransactionBegin, data);
+            }
+        }
+
+        void WriteTransactionCommit(Guid data)
+        {
+            if (_diagnosticListener.IsEnabled(NexDddDiagnosticListenerNames.TransactionCommit))
+            {
+                _diagnosticListener.Write(NexDddDiagnosticListenerNames.TransactionCommit, data);
+            }
+        }
+
+        void WriteTransactionRollback(Guid data)
+        {
+            if (_diagnosticListener.IsEnabled(NexDddDiagnosticListenerNames.TransactionRollback))
+            {
+                _diagnosticListener.Write(NexDddDiagnosticListenerNames.TransactionRollback, data);
+            }
+        }
+        #endregion
+
+    }
+}

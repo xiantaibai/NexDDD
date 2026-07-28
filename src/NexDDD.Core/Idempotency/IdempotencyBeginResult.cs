@@ -1,0 +1,63 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NexDDD.Core.Idempotency
+{
+    /// <summary>
+    /// 幂等返回结果。
+    /// 负责幂等执行模块中的 IdempotencyBeginResult 能力，并限定其与调用方及基础设施组件的协作边界。
+    /// </summary>
+    public sealed class IdempotencyBeginResult
+    {
+        public bool Success { get; init; }
+
+        public bool IsCompleted { get; init; }
+
+        public bool IsProcessing { get; init; }
+
+        public string? RequestId { get; init; }
+
+        /// <summary>
+        /// 新增成功
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns></returns>
+        public static IdempotencyBeginResult SuccessResult(
+            string requestId)
+        {
+            return new()
+            {
+                Success = true,
+                RequestId = requestId
+            };
+        }
+
+        /// <summary>
+        /// 已完成
+        /// </summary>
+        /// <returns></returns>
+        public static IdempotencyBeginResult CompletedResult()
+        {
+            return new()
+            {
+                IsCompleted = true
+            };
+        }
+
+        /// <summary>
+        /// 进行中
+        /// </summary>
+        /// <returns></returns>
+        public static IdempotencyBeginResult ProcessingResult()
+        {
+            return new()
+            {
+                IsProcessing = true
+            };
+        }
+    }
+}

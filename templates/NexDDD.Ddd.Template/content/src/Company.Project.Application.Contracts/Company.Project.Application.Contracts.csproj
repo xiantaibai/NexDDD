@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.3.0" />
+    <PackageReference Include="NexDDD.Core" Version="$(NexDddVersion)" />
+  </ItemGroup>
+</Project>

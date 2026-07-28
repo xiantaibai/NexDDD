@@ -1,0 +1,4 @@
+interface:
+  display_name: "NexDDD DDD Framework"
+  short_description: "指导 AI 按 NexDDD DDD 架构实现业务功能"
+  default_prompt: "Use $nexddd-ddd-framework 按 NexDDD DDD 架构实现一个新的业务功能。"

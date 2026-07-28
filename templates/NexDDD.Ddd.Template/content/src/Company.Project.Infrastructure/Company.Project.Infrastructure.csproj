@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Company.Project.Application.Contracts\Company.Project.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Company.Project.Domain\Company.Project.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NexDDD.Provider.EntityFrameworkCore" Version="$(NexDddVersion)" />
+  </ItemGroup>
+</Project>

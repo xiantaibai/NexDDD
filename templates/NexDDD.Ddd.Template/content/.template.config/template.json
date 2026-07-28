@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "NexDDD",
+  "classifications": [
+    "Web",
+    "DDD",
+    "NexDDD"
+  ],
+  "identity": "NexDDD.Templates.Ddd",
+  "name": "NexDDD DDD Project",
+  "shortName": "nexddd-ddd",
+  "sourceName": "Company.Project",
+  "defaultName": "Company.Project",
+  "description": "创建包含 Contracts、Application、Domain、Infrastructure、WebApi 和领域测试的 NexDDD DDD 项目。",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "solution"
+  },
+  "symbols": {
+    "nexdddVersion": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "1.2.9",
+      "displayName": "NexDDD 包版本",
+      "description": "生成项目引用的 NexDDD NuGet 包版本。",
+      "replaces": "NEXDDD_VERSION"
+    }
+  },
+  "primaryOutputs": [
+    {
+      "path": "Company.Project.sln"
+    },
+    {
+      "path": "src/Company.Project.WebApi/Company.Project.WebApi.csproj"
+    }
+  ]
+}
